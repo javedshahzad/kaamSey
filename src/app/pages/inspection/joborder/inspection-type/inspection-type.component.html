@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-button color="dark" size="small" shape="round" (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">
+          {{globalService.inspectionTypeName}}
+        </ion-text>
+      </ion-text>
+    </ion-title>
+
+    <ion-button  slot="end"  fill="clear" size="large" color="medium" (click)="showInspActions($event)">
+      <ion-icon name="ellipsis-vertical"></ion-icon>
+    </ion-button>
+    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="login auth-page">
+  <div class="auth-content">
+    <form [formGroup]="myForm" class="list-form">
+      <ion-grid class="m-0">
+        <ion-row>
+          <ion-label position="floating" class="label-font">
+            {{'InspectionType.address_Location' | translate}}
+          </ion-label>
+        </ion-row>
+        <ion-row class="addrRow">
+          <ion-item no-padding>
+            <ion-textarea type="text" formControlName="address"></ion-textarea>
+            <ion-icon *ngIf="!this.isCreateJobCheckin" name="archive" class="m-auto" (click)="getJobAddress()" ></ion-icon>
+          </ion-item>
+        </ion-row>
+      </ion-grid>
+      <p ion-text class="text08"
+        *ngIf="myForm.controls['address'].hasError('required') && myForm.controls['address'].touched">
+        <ion-text color="danger">
+          {{'InspectionType.addressEmpty' | translate}}
+        </ion-text>
+      </p>
+    </form>
+  </div>
+
+  <div>
+    <ion-button *ngIf="property_image_visible" size="medium" expand="full" color="primary" (click)="selectImage()" tappable>
+      {{'InspectionType.uploadButton' | translate}}
+    </ion-button>
+
+    <ion-list>
+      <ion-item *ngFor="let objImg of arrImage; index as pos" text-wrap>
+        <ion-thumbnail slot="start">
+          <ion-img [src]="objImg.Path"></ion-img>
+        </ion-thumbnail>
+
+        <ion-label>
+          {{objImg.Name}}
+        </ion-label>
+
+        <ion-button slot="end" fill="clear" (click)="deleteImage(objImg, pos)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+
+<ion-footer padding>
+  <ion-toolbar>
+    <ion-button size="medium" expand="full" color="primary" (click)="next()" tappable>
+      {{'JobOrder.nextButton' | translate}}
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

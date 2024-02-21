@@ -1,0 +1,46 @@
+<ion-header translucent>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">Change Image Name</ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen *ngIf="objImg">
+  <ion-card class="imgSection">
+    <ion-card-content>
+      <ion-input placeholder="Enter image name" type="text" [(ngModel)]="objImg.Name" (click)="viewImgNameSuggestion()"
+        (ionBlur)="removeImgNameSuggestion()">
+      </ion-input>
+    </ion-card-content>
+    <ion-list class="imgSugg" *ngIf="showImgSuggList">
+      <ion-item *ngFor="let itemVal of imgSuggList" (click)="addImgNameSugg(itemVal)">
+        {{itemVal}}
+      </ion-item>
+    </ion-list>
+    <img src="{{objImg.Path}}" />
+  </ion-card>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="btn-group">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button size="medium" expand="full" color="primary" (click)="dismissModal()" tappable>
+            Cancel
+          </ion-button>
+        </ion-col>
+
+        <ion-col size="6">
+          <div>
+            <ion-button icon-right size="medium" expand="full" color="primary" (click)="dismissModal(objImg)" tappable
+              [disabled]="objImg.Name == ''">
+              Done
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

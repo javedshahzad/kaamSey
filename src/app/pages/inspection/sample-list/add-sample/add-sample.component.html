@@ -1,0 +1,472 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <!-- <ion-buttons slot="start">
+      <ion-back-button
+        icon="arrow-back"
+        size="small"
+        shape="round"
+        color="dark"
+        text=""
+      >
+      </ion-back-button>
+    </ion-buttons> -->
+    <ion-buttons slot="start">
+      <ion-button color="dark" fill="clear" (click)="goback()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text class="headr_title" color="dark">
+          {{
+          inspectionObj.title == "add"
+          ? ("Sample.addtitle" | translate)
+          : ("Sample.editTitle" | translate)
+          }}
+        </ion-text>
+      </ion-text>
+    </ion-title>
+
+
+    <ion-buttons slot="end">
+      <ion-button *ngIf="room_collection_visible" (click)="gotoSurveyList();" class="buttons_act_main" size="small" color="primary" fill="solid">
+        R
+      </ion-button>
+      <ion-button *ngIf="material_collection_visible" (click)="gotoMaterials()" class="buttons_act_main" size="small" color="primary"
+        fill="solid">M</ion-button>
+
+      <ion-button *ngIf="sample_collection_visible" (click)="gotoSamplelist()" class="buttons_act_main" size="small" color="primary"
+        fill="solid">S</ion-button>
+
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item *ngIf="type === 'edit' && from == 'material_list'">
+    <ion-label>Select Sample</ion-label>
+    <ion-select (ionChange)="formAutofill($event)" [(ngModel)]="selectedSample">
+      <ion-select-option *ngFor="let arr of arrSample" value="{{ arr.SampleGuid }}">
+        {{ arr.analysis_type }} - {{ arr.client_sample_id }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <form [formGroup]="slideOneForm" *ngIf="slideOneForm">
+    <ion-item [class.invalid]="
+        !slideOneForm.controls.analysis_type.valid &&
+        (slideOneForm.controls.analysis_type.dirty || submitAttempt)
+      ">
+      <ion-label>Analysis Type</ion-label>
+      <ion-select formControlName="analysis_type" (ionChange)="getSampleType($event);clearMaterialData($event)">
+        <ion-select-option *ngFor="let arr of arrAnalysisType" value="{{ arr.name }}">{{ arr.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item [class.invalid]="
+        !slideOneForm.controls.sample_type.valid &&
+        (slideOneForm.controls.sample_type.dirty || submitAttempt)
+      ">
+      <ion-label>Sample Type</ion-label>
+      <ion-select formControlName="sample_type" (ionChange)="clearMaterialData($event);">
+        <ion-select-option *ngFor="let arr of arrSampleType" value="{{ arr.name }}">{{ arr.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.analysis_type.value == 'Lead' &&  slideOneForm.controls.sample_type.value != 'Dust Wipe - PA'" [class.invalid]="
+        !slideOneForm.controls.Other_metal_analysis.valid &&
+        (slideOneForm.controls.Other_metal_analysis.dirty || submitAttempt)
+      ">
+      <ion-label>Other Metal Analysis</ion-label>
+      <ion-select multiple="true" formControlName="Other_metal_analysis">
+        <ion-select-option *ngFor="let arr of arrOtherMetalanalysis" value="{{ arr.id }}">{{ arr.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <p ion-text class="text08" *ngIf="other_metal_analysis_length_error">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <div class="dropdown_main_section" *ngIf="
+    slideOneForm.controls.analysis_type.value == 'Asbestos' &&
+    slideOneForm.controls.sample_type.value == 'Bulk'">
+
+      <ion-item lines="none">
+        <ion-label>Material</ion-label>
+        <ionic-selectable formControlName="material_id" [canClear]="true" [items]="materialList"
+          itemValueField="Client_Material_Id" itemTextField="displayName" [shouldStoreItemValue]="true"
+          [canSearch]="true" closeButtonSlot="end" (onChange)="loadMaterialImage($event)">
+          <ng-template ionicSelectableCloseButtonTemplate>
+            <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+    </div>
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value != 'Bulk' && slideOneForm.controls.sample_type.value != 'Dust Wipe - PA'" [class.invalid]="
+        !slideOneForm.controls.other_element_analysis.valid &&
+        (slideOneForm.controls.other_element_analysis.dirty || submitAttempt)">
+
+      <ion-label>Other Element Analysis</ion-label>
+      <ion-select multiple="true" formControlName="other_element_analysis">
+        <ion-select-option *ngFor="let arr of arrOtherElementanalysis" value="{{ arr.id }}">{{ arr.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <p ion-text class="text08" *ngIf="slideOneForm.controls.other_element_analysis_length_error">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="isFirstArngSample" (ionInput)="checkStateValidation($event.target.value)" [class.invalid]="
+    !slideOneForm.controls.state.valid &&
+    (slideOneForm.controls.state.dirty || submitAttempt)">
+      <ion-label position="floating">State</ion-label>
+      <ion-input formControlName="state" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="(slideOneForm.controls.state.hasError('required') || slideOneForm.controls.state.hasError('minlength')||slideOneForm.controls.state.hasError('pattern')  || slideOneForm.controls.state.hasError('maxlength')) && slideOneForm.controls.state.touched">
+      <ion-text color="danger">
+        State must be of 2 characters.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="isFirstArngSample" (ionInput)="checkCityValidation($event.target.value)" [class.invalid]="
+    !slideOneForm.controls.city.valid &&
+    (slideOneForm.controls.city.dirty || submitAttempt)">
+      <ion-label position="floating">City</ion-label>
+      <ion-input formControlName="city" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="(slideOneForm.controls.city.hasError('required') || slideOneForm.controls.city.hasError('minlength')  ||slideOneForm.controls.state.hasError('pattern')||slideOneForm.controls.city.hasError('maxlength')) && slideOneForm.controls.city.touched">
+      <ion-text color="danger">
+        City must be of 4 characters.
+      </ion-text>
+    </p>
+
+    <ion-item [class.invalid]="
+        !slideOneForm.controls.client_sample_id.valid &&
+        (slideOneForm.controls.client_sample_id.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Client Sample ID</ion-label>
+      <ion-input formControlName="client_sample_id" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.client_sample_id.hasError('maxlength') && slideOneForm.controls.client_sample_id.touched && client_Material_Id_error">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <ion-item [class.invalid]="
+        !slideOneForm.controls.sample_desc.valid &&
+        (slideOneForm.controls.sample_desc.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Sample Description</ion-label>
+      <ion-textarea formControlName="sample_desc"> </ion-textarea>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value != 'Dust Wipe - PA'" [class.invalid]="
+        !slideOneForm.controls.sample_loc.valid &&
+        (slideOneForm.controls.sample_loc.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Sample Location</ion-label>
+      <ion-input formControlName="sample_loc" type="text"> </ion-input>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Water'">
+      <ion-label>Bottle Size</ion-label>
+      <ion-select formControlName="BottleSizeId">
+        <ion-select-option *ngFor="let arr of arBottleSize" value="{{ arr.record_id }}">{{ arr.definition }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Air'" [class.invalid]="
+        !slideOneForm.controls.sample_vol.valid &&
+        (slideOneForm.controls.sample_vol.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Volume (L)</ion-label>
+      <ion-input formControlName="sample_vol" type="number"> </ion-input>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Water'" [class.invalid]="
+        !slideOneForm.controls.volume.valid &&
+        (slideOneForm.controls.volume.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Volume</ion-label>
+      <ion-input formControlName="volume" type="tel"> </ion-input>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Water'" [class.invalid]="
+        !slideOneForm.controls.purpose.valid &&
+        (slideOneForm.controls.purpose.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Purpose</ion-label>
+      <ion-input formControlName="purpose" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.purpose.hasError('maxlength') && slideOneForm.controls.purpose.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 20.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Water'">
+      <ion-label>WSSN</ion-label>
+      <ion-checkbox slot="end" formControlName="WSSN"></ion-checkbox>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Air'" [class.invalid]="
+        !slideOneForm.controls.sampling_start_time.valid &&
+        (slideOneForm.controls.sampling_start_time.dirty || submitAttempt)
+      ">
+      <ion-label>Sampling Start Time</ion-label>
+      <ion-input type="datetime-local" formControlName="sampling_start_time"></ion-input>
+      <!-- <ion-datetime display-format="H:mm" picker-format="H:mm" formControlName="sampling_start_time">
+      </ion-datetime> -->
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.sampling_start_time.hasError('maxlength') && slideOneForm.controls.sampling_start_time.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Air'" [class.invalid]="
+        !slideOneForm.controls.sampling_end_time.valid &&
+        (slideOneForm.controls.sampling_end_time.dirty || submitAttempt)
+      ">
+      <ion-label>Sampling End Time</ion-label>
+      <ion-input type="datetime-local" formControlName="sampling_end_time"></ion-input>
+      <!-- <ion-datetime display-format="H:mm" picker-format="H:mm" formControlName="sampling_end_time">
+      </ion-datetime> -->
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.sampling_end_time.hasError('maxlength') && slideOneForm.controls.sampling_end_time.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Air'" [class.invalid]="
+        !slideOneForm.controls.flow_rate.valid &&
+        (slideOneForm.controls.flow_rate.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Flow Rate</ion-label>
+      <ion-input formControlName="flow_rate" type="tel"> </ion-input>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Air'" [class.invalid]="
+        !slideOneForm.controls.sampling_duration.valid &&
+        (slideOneForm.controls.sampling_duration.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Sample Duration</ion-label>
+      <ion-input formControlName="sampling_duration" type="tel"> </ion-input>
+    </ion-item>
+    <ion-item
+      *ngIf="slideOneForm.controls.sample_type.value == 'Dust Wipe'|| slideOneForm.controls.sample_type.value == 'Dust Wipe - PA' ||  slideOneForm.controls.sample_type.value == 'ARNG Dust Wipes' || slideOneForm.controls.sample_type.value == 'Paint Chips'"
+      [class.invalid]="
+        !slideOneForm.controls.width.valid &&
+        (slideOneForm.controls.width.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Width</ion-label>
+      <ion-input formControlName="width" type="text"> </ion-input>
+    </ion-item>
+
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.width.hasError('maxlength') && slideOneForm.controls.width.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 30.
+      </ion-text>
+    </p>
+
+    <ion-item
+      *ngIf="slideOneForm.controls.sample_type.value == 'Dust Wipe' || slideOneForm.controls.sample_type.value == 'Dust Wipe - PA' || slideOneForm.controls.sample_type.value == 'ARNG Dust Wipes' || slideOneForm.controls.sample_type.value == 'Paint Chips'"
+      [class.invalid]="
+        !slideOneForm.controls.length.valid &&
+        (slideOneForm.controls.length.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Length</ion-label>
+      <ion-input formControlName="length" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.length.hasError('maxlength') && slideOneForm.controls.length.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 20.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Soil'" [class.invalid]="
+        !slideOneForm.controls.squarefeet.valid &&
+        (slideOneForm.controls.squarefeet.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Square Feet</ion-label>
+      <ion-input formControlName="squarefeet" type="tel"> </ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value != 'Dust Wipe - PA'" [class.invalid]="
+        !slideOneForm.controls.turn_around.valid &&
+        (slideOneForm.controls.turn_around.dirty || submitAttempt)
+      ">
+      <ion-label>Turn Around Time</ion-label>
+      <ion-select formControlName="turn_around">
+        <ion-select-option *ngFor="let arr of arrTurnAroundType" [value]="arr.id">{{ arr.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Date Collected</ion-label>
+      <ion-input type="date" formControlName="date_collected"></ion-input>
+      <!-- <ion-datetime display-format="MMM DD, YYYY" picker-format="MMM DD, YYYY" formControlName="date_collected">
+      </ion-datetime> -->
+    </ion-item>
+    <p ion-text class="text08" *ngIf="slideOneForm.controls.date_collected.hasError('maxlength')
+     && slideOneForm.controls.date_collected.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 22.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label>Time Collected</ion-label>
+      <ion-input type="datetime-local" formControlName="TimeCollected"></ion-input>
+      <!-- <ion-datetime display-format="H:mm" picker-format="H:mm" formControlName="TimeCollected">
+      </ion-datetime> -->
+    </ion-item>
+    <p ion-text class="text08" *ngIf="slideOneForm.controls.TimeCollected.hasError('maxlength') 
+    && slideOneForm.controls.TimeCollected.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value != 'Bulk' && slideOneForm.controls.sample_type.value != 'Dust Wipe - PA'">
+      <ion-label>Control Sample</ion-label>
+      <ion-checkbox slot="end" formControlName="control_sample"></ion-checkbox>
+    </ion-item>
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value != 'Bulk' && slideOneForm.controls.sample_type.value != 'Dust Wipe - PA'">
+      <ion-label>FB Sample</ion-label>
+      <ion-checkbox slot="end" formControlName="fb_sample"></ion-checkbox>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Ship Method </ion-label>
+      <ion-select formControlName="ship_method">
+        <ion-select-option>FedEX</ion-select-option>
+        <ion-select-option>UPS</ion-select-option>
+        <ion-select-option>USPS</ion-select-option>
+        <ion-select-option>Other</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <!-- <p ion-text class="text08" *ngIf="slideOneForm.controls.ship_method.hasError('maxlength') && 
+    slideOneForm.controls.ship_method.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p> -->
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value != 'Dust Wipe - PA'" [class.invalid]="
+        !slideOneForm.controls.waybill.valid &&
+        (slideOneForm.controls.waybill.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Waybill</ion-label>
+      <ion-input formControlName="waybill" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08" *ngIf="slideOneForm.controls.waybill.hasError('maxlength') && 
+    slideOneForm.controls.waybill.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label>Ship Date </ion-label>
+      <ion-input type="date" formControlName="ship_date"></ion-input>
+      <!-- <ion-datetime display-format="MMM DD, YYYY" picker-format="MMM DD, YYYY" >
+      </ion-datetime> -->
+    </ion-item>
+    <p ion-text class="text08" *ngIf="slideOneForm.controls.ship_date.hasError('maxlength') && 
+    slideOneForm.controls.ship_date.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 22.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="slideOneForm.controls.sample_type.value == 'Water'">
+      <ion-label>Includes CU Analysis</ion-label>
+      <ion-checkbox slot="end" formControlName="IncludeCUAnalysis"></ion-checkbox>
+    </ion-item>
+    <ion-item *ngIf="
+        slideOneForm.controls.sample_type.value == 'Dust Wipe' ||
+        slideOneForm.controls.sample_type.value == 'ARNG Dust Wipes' ||
+        slideOneForm.controls.sample_type.value == 'Soil'  || 
+        slideOneForm.controls.sample_type.value == 'Paint Chips'
+      ">
+      <ion-label>Includes Paint Chips</ion-label>
+      <ion-checkbox slot="end" formControlName="IncludePaintchips"></ion-checkbox>
+    </ion-item>
+    <ion-item *ngIf="
+        slideOneForm.controls.sample_type.value == 'Dust Wipe' ||
+        slideOneForm.controls.sample_type.value == 'ARNG Dust Wipes' ||
+        slideOneForm.controls.sample_type.value == 'Soil' ||
+        slideOneForm.controls.sample_type.value == 'Paint Chips'
+      ">
+      <ion-label>Surface Smooth and Cleanable</ion-label>
+      <ion-checkbox slot="end" formControlName="SurfaceSmoothClean"></ion-checkbox>
+    </ion-item>
+    <ion-item [class.invalid]="
+        !slideOneForm.controls.comment.valid &&
+        (slideOneForm.controls.comment.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Comment</ion-label>
+      <ion-input formControlName="comment" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.comment.hasError('maxlength') && slideOneForm.controls.comment.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 100.
+      </ion-text>
+    </p>
+
+    <ion-item [class.invalid]="
+    !slideOneForm.controls.Lab_Id_Client.valid &&
+    (slideOneForm.controls.Lab_Id_Client.dirty || submitAttempt)">
+      <ion-label>Assigned Lab</ion-label>
+      <ion-select formControlName="Lab_Id_Client">
+        <ion-select-option *ngFor="let arr of sampleAssignedLabList" value="{{arr.Id}}">{{ arr.Name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+
+
+    <ion-list class="image_main_section" *ngIf="displayImage">
+      <ion-item lines="none">
+        <ion-thumbnail>
+          <ion-img *ngIf="displayImage" [src]="displayImage"></ion-img>
+        </ion-thumbnail>
+      </ion-item>
+    </ion-list>
+
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="btn-group">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button size="medium" expand="full" color="primary" tappable (click)="submit('SCA')"
+            *ngIf="inspectionObj.title == 'add'" class="SCA" [disabled]="disableSca">
+            Save & Create Another
+          </ion-button>
+          <ion-button size="medium" expand="full" color="primary" tappable (click)="goBack()"
+            *ngIf="inspectionObj.title != 'add'">
+            {{ "Login.cancel" | translate }}
+          </ion-button>
+        </ion-col>
+
+        <ion-col size="6">
+          <div>
+            <ion-button icon-right size="medium" expand="full" color="primary" tappable (click)="submit('SR')">
+              {{ inspectionObj.title == "add" ? "Save & Finish" : "Update" }}
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

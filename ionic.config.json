@@ -1,0 +1,7 @@
+{
+  "name": "webnnel",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

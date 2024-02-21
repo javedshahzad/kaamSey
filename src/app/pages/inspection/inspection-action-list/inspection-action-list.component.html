@@ -1,0 +1,8 @@
+<ion-list class="inspectionactions">
+  <ion-item *ngIf="show_Cam_Img" (click)="inspectionActionEvent(actionType.Image)"><ion-icon name="image"></ion-icon> Images</ion-item>
+  <ion-item *ngIf="show_Cam_Img" (click)="inspectionActionEvent(actionType.Camera)"><ion-icon name="camera"></ion-icon> Camera </ion-item>
+  <ion-item *ngIf="(fromAddress || show_Cam_Img) && sample_collection_visible" (click)="inspectionActionEvent(actionType.RMS)"><ion-icon src="assets/img/collect.svg"></ion-icon> Samples </ion-item>
+  <!-- <ion-item (click)="inspectionActionEvent(actionType.Sync)"><ion-icon name="sync"></ion-icon> Sync</ion-item> -->
+  <ion-item (click)="inspectionActionEvent(actionType.CheckIn)"><ion-icon name="checkmark-circle-outline"></ion-icon> Check-in</ion-item>
+  <ion-item  *ngIf="fromSearchInsp && sample_collection_visible" (click)="inspectionActionEvent(actionType.RMS)"><ion-icon src="assets/img/collect.svg"></ion-icon> Samples </ion-item>
+</ion-list>

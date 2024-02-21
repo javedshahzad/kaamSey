@@ -1,0 +1,22 @@
+{
+	"appId": "com.kaamsey.inspection",
+	"appName": "KaamSey",
+	"bundledWebRuntime": false,
+	"webDir": "www",
+	"plugins": {
+	  "SplashScreen": {
+		"showSpinner": false,
+		"launchShowDuration":5000,
+		"launchAutoHide": true,
+		"spinnerColor": "#f53d3d",
+		"splashFullScreen": true,
+		"splashImmersive": true,
+		"backgroundColor": "#022b4f"
+	  }
+	},
+	"cordova": {
+		"prefrences":{
+			"WKWebViewOnly":true
+		}
+	}
+  }

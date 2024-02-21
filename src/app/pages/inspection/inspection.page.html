@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">{{'Inspection.title' | translate}}</ion-text>
+      </ion-text>
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button size="small" shape="round" color="dark" (click)="add()">
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- <ion-searchbar placeholder="{{'Inspection.search' | translate}}" (ionInput)="onInput($event)">
+  </ion-searchbar> -->
+
+  <div *ngIf="arrInspection.length != 0 && isLoading == false">
+    <ion-card *ngFor="let objInspection of arrInspection; let i = index;" class="no-radius ion-no-margin">
+      <ion-item-sliding #slidingItem>
+        <ion-item lines="none">
+          <ion-label>
+            <h3 class="fw700 ion-no-margin">
+              <ion-text color="primary">Job Number - {{objInspection.JobId}}</ion-text>
+            </h3>
+
+            <h3 class="ion-no-margin">
+              <!-- <ion-datetime readonly="true"  presentation="date" [preferWheel]="true" displayFormat="MMM DD, YYYY" value="{{objInspection.InspectionDate}}">
+              </ion-datetime> -->
+              {{objInspection.InspectionDate | date:'fullDate'}}
+             
+            </h3>
+
+            <p class="ion-no-margin" [ngClass]="{'draft': objInspection.Status == objStatusType.Draft,
+                                        'inprogress': objInspection.Status == objStatusType.InProgress || objInspection.Status == 0,
+                                        'uploaded': objInspection.Status == objStatusType.Uploaded,
+                                        'complete': objInspection.Status == objStatusType.Complete}">
+              <ion-text>{{(objInspection.Status == 0 ? objStatusType.InProgress.toString() :
+                objInspection.Status.toString()) | translate}}</ion-text>
+            </p>
+          </ion-label>
+     
+          &nbsp;
+            <ion-button fill="clear" size="small"  color="medium" *ngIf="objInspection.WrongJobId == 'true' && !this.isCreateJobCheckin"
+            (click)="edit(objInspection)">
+            &nbsp;   &nbsp; <ion-icon name="create" mode="ios"></ion-icon>
+          </ion-button>
+          &nbsp;
+          <ion-button fill="clear" size="large"  color="medium" (click)="detail(objInspection)">
+            &nbsp;  &nbsp; <ion-icon name="eye"></ion-icon>
+          </ion-button>
+
+          <ion-button fill="clear" size="large"  color="medium" (click)="showInspActions($event,objInspection)">
+            <ion-icon name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+       
+
+          <!-- <ion-button fill="clear" size="large" color="medium" [disabled]="this.pdfDownloadService.progressBar"
+          *ngIf="objInspection.Status == objStatusType.Uploaded" (click)="downloadAllQuestion(objInspection)">
+          <ion-icon name="download"></ion-icon>
+        </ion-button>
+
+        <ion-button fill="clear" size="large" color="medium" [disabled]="this.pdfDownloadService.progressBar"
+          *ngIf="objInspection.Status == objStatusType.Uploaded && objInspection.InspectionTypeId == '2'"
+          (click)="downloadRentalQuestion(objInspection)">
+          <ion-icon name="code-download"></ion-icon>
+        </ion-button>
+
+        <ion-button fill="clear" size="large" color="medium" [disabled]="this.pdfDownloadService.progressBar"
+          *ngIf="objInspection.Status == objStatusType.Uploaded && objInspection.InspectionTypeId == '1'"
+          (click)="downloadWaterQuestion(objInspection)">
+          <ion-icon name="cloud-download"></ion-icon>
+        </ion-button> -->
+
+          <!-- <ion-button fill="clear" size="large" color="medium"
+            (click)="syncOneInspection(objInspection.InspectionGuid, objInspection.InspectionTypeId)">
+            <ion-icon name="sync"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="large" color="medium"
+            (click)="syncOneInspection(objInspection.InspectionGuid, objInspection.InspectionTypeId,true,objInspection)">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="large" color="medium" (click)="samplelist(objInspection)">
+            <ion-icon src="assets/img/collect.svg"></ion-icon>
+          </ion-button> -->
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="removeItem(objInspection)">
+            <ion-icon name="trash"></ion-icon>
+            <ion-text>Delete</ion-text>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+
+    </ion-card>
+  </div>
+
+  <div *ngIf="arrInspection.length == 0 && isLoading == true">
+    <ion-card *ngFor="let obj of [1,2,3,4,5,6,7,8,9,10];">
+      <ion-item lines="none">
+        <ion-label>
+          <h2 class="fw700 ion-no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </h2>
+
+          <h3 class="ion-no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </h3>
+
+          <p class="ion-no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </p>
+        </ion-label>
+
+        <p>
+          <ion-skeleton-text animated style="width: 25px; height: 25px;"></ion-skeleton-text>
+        </p>
+
+        <ion-button fill="clear" size="large" color="medium">
+          <ion-skeleton-text animated style="width: 25px; height: 25px;"></ion-skeleton-text>
+        </ion-button>
+      </ion-item>
+    </ion-card>
+  </div>
+
+  <div *ngIf="arrInspection.length == 0 && isLoading == false">
+    <ion-text color="tertiary">{{'InspectionDetail.noRecord' | translate}}</ion-text>
+  </div>
+</ion-content>

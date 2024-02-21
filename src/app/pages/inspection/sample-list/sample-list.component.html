@@ -1,0 +1,166 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-button color="dark" fill="clear" (click)="goback()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text class="headr_title" color="dark">{{
+          "Sample.title" | translate
+        }}</ion-text>
+      </ion-text>
+    </ion-title>
+
+    <ion-buttons slot="end" *ngIf="!action">
+      <ion-button *ngIf="room_collection_visible" (click)="goToSurveyList()" class="buttons_act_main" size="small" color="primary" fill="solid">
+        R
+      </ion-button>
+      <ion-button *ngIf="material_collection_visible" (click)="gotoMaterials()" class="buttons_act_main" size="small" color="primary" fill="solid">M
+      </ion-button>
+      <ion-button *ngIf="sample_collection_visible" (click)="add()" class="buttons_act_main" size="small" color="primary" fill="solid">S+</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding *ngIf="inspectionObj.Status || inspectionObj.Status == 0">
+  <ion-card class="noteCard">
+    <ion-card-content>
+      <ion-item class="no-border-bottom" lines="none">
+        <ion-label>
+          <h3 no-margin class="fw700 no-margin">
+            <ion-text color="primary">Job Number - {{ jobId }}</ion-text><br />
+          </h3>
+          <h3 no-margin class="no-margin" *ngIf="!!inspectionObj.Address">
+            <ion-text>Address - {{ inspectionObj.Address  }}</ion-text><br />
+          </h3>
+          <h3 no-margin class="no-margin">
+            <!-- <ion-datetime readonly display-format="MMM DD, YYYY" value="{{ inspectionObj.InspectionDate }}">
+            </ion-datetime> -->
+            {{inspectionObj.InspectionDate | date:'fullDate'}}
+          </h3>
+          <!-- <ion-text
+        *ngIf="inspectionObj.Client_Material_Id && inspectionObj.Assumed"
+        >Material Id: {{ inspectionObj.Client_Material_Id }}</ion-text
+      > -->
+          <p class="no-margin" [ngClass]="{
+          draft: inspectionObj.Status == objStatusType.Draft,
+          inprogress:
+            inspectionObj.Status == objStatusType.InProgress ||
+            inspectionObj.Status == 0,
+          uploaded: inspectionObj.Status == objStatusType.Uploaded,
+          complete: inspectionObj.Status == objStatusType.Complete
+        }">
+            <ion-text>{{
+          (inspectionObj.Status == 0
+            ? objStatusType.InProgress.toString()
+            : inspectionObj.Status.toString()
+          ) | translate
+        }}</ion-text>
+          </p>
+        </ion-label>
+
+        <ion-button fill="clear" size="large" color="medium" (click)="showInspActions($event)">
+          <ion-icon name="ellipsis-vertical"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-searchbar placeholder="{{ 'Sample.search' | translate }}" (ionInput)="onInput($event)">
+  </ion-searchbar>
+  <!-- <ion-grid *ngIf="inspectionObj.Client_Material_Id && inspectionObj.Assumed"> -->
+  <ion-grid *ngIf="from && from == 'materialPage'">
+    <ion-row>
+      <ion-col size="11" class="ion-no-padding">
+        <ion-item class="ion-no-padding">
+          <ion-label position="floating">Material</ion-label>
+          <ion-select [(ngModel)]="selectedMaterial" (ionChange)="change()">
+            <ion-select-option *ngFor="let arr of materialList" value="{{ arr.Client_Material_Id }}">{{
+                arr.Material && arr.Material_Sub
+                  ? arr.Material + " / " + arr.Material_Sub
+                  : arr.Material
+              }}{{ arr.Size ? " - " + arr.Size : "" }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col size="1" (click)="clear()">
+        <ion-icon name="close-circle-outline" style="font-size: 25px; padding-top: 25px"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div *ngIf="arrSample.length != 0 && isLoading == false">
+    <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
+      <ion-card no-margin class="no-radius" *ngFor="let arr of arrSample">
+        <ion-item-sliding #slidingItem>
+          <ion-item lines="none">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10" class="ion-no-padding">
+                  <ion-label class="ion-no-padding">
+                    <h3 no-margin class="fw700 no-margin">
+                      <ion-text color="primary">{{ arr.analysis_type }} - {{ arr.client_sample_id }}
+                      </ion-text>
+                    </h3>
+                    <h3 no-margin class="fw700 no-margin">
+                      <ion-text color="primary">{{ arr.sample_type }}
+                      </ion-text>
+                    </h3>
+                    <h3 no-margin class="fw700 no-margin">
+                      <ion-text color="primary">{{ arr.sample_desc }} - {{ arr.sample_loc }}
+                      </ion-text>
+                    </h3>
+                    {{arr.date_collected | date:'fullDate'}}
+                    <!-- <ion-datetime readonly display-format="MMM DD, YYYY" value="{{ arr.date_collected }}">
+                    </ion-datetime> -->
+                  </ion-label>
+                </ion-col>
+                <ion-col size="1" class="ion-no-padding">
+                  <ion-button fill="clear" size="large" color="medium" (click)="add(arr)" *ngIf="!action">
+                  &nbsp;  <ion-icon name="create" mode="ios"></ion-icon>
+                  </ion-button>
+                </ion-col>
+                <ion-col size="1">
+                  <ion-reorder class="reorder-icon"></ion-reorder>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+
+          <ion-item-options side="end" *ngIf="!this.from && !this.isArchiveData">
+            <ion-item-option color="danger" (click)="removeItem(arr)">
+              <ion-icon name="trash"></ion-icon>
+              <ion-text>Delete</ion-text>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-card>
+    </ion-reorder-group>
+  </div>
+  <div *ngIf="arrSample.length == 0 && isLoading == true">
+    <ion-card no-margin class="no-radius">
+      <ion-item lines="none">
+        <ion-label>
+          <h3 no-margin class="fw700 no-margin">
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </h3>
+
+          <h3 no-margin class="no-margin">
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </h3>
+        </ion-label>
+
+        <ion-button fill="clear" size="large" color="medium">
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </ion-button>
+      </ion-item>
+    </ion-card>
+  </div>
+  <div *ngIf="arrSample.length == 0 && isLoading == false">
+    <ion-text color="tertiary">{{
+      "InspectionDetail.noRecord" | translate
+    }}</ion-text>
+  </div>
+</ion-content>

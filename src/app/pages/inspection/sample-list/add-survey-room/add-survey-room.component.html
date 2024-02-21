@@ -1,0 +1,327 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-button color="dark" fill="clear" (click)="goback()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text *ngIf="type == 'add'" color="dark">{{
+          "Survey.addtitle" | translate
+          }}</ion-text>
+        <ion-text *ngIf="type == 'edit'" color="dark">{{
+          "Survey.edittitle" | translate
+          }}</ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+  <ion-item *ngIf="type == 'edit' && from == 'material_list'">
+    <ion-label>Select Room</ion-label>
+    <ion-select [(ngModel)]="selectedRoom" (ionChange)="change($event)">
+      <ion-select-option *ngFor="let arr of surveyRoomList" value="{{ arr.roomGuid }}">{{ arr.room_number }} / {{
+        arr.floor_number }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <form [formGroup]="surverRoomForm" *ngIf="inspectionObj">
+    <ion-item [class.invalid]="
+        (!surverRoomForm.controls.client_material_id.valid ||
+          surverRoomForm.controls.client_material_id.errors?.pattern) &&
+        (surverRoomForm.controls.client_material_id.dirty || submitAttempt)
+      ">
+      <ion-label>Select Material</ion-label>
+      <ion-select formControlName="client_material_id" (ionChange)="formAutofill($event)">
+        <ion-select-option *ngFor="let arr of materialList" value="{{ arr.Client_Material_Id }}">
+          {{getMaterialNameFormat(arr)}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item [class.invalid]="
+        !surverRoomForm.controls.room_number.valid &&
+        (surverRoomForm.controls.room_number.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Room</ion-label>
+      <ion-input formControlName="room_number" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="surverRoomForm.controls.room_number.hasError('maxlength') && surverRoomForm.controls.room_number.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <ion-item [class.invalid]="
+        (!surverRoomForm.controls.floor_number.valid ||
+          surverRoomForm.controls.floor_number.errors?.pattern) &&
+        (surverRoomForm.controls.floor_number.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Floor Number </ion-label>
+      <ion-input formControlName="floor_number" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="surverRoomForm.controls.floor_number.hasError('maxlength') && surverRoomForm.controls.floor_number.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label position="floating">Sq Feet</ion-label>
+      <ion-input formControlName="sq_feet" type="tel"
+        [disabled]="((surverRoomForm.controls.linear_feet_0_4.value !=0 && !!surverRoomForm.controls.linear_feet_0_4.value) || (surverRoomForm.controls.linear_feet_5_7.value !=0 && !!surverRoomForm.controls.linear_feet_5_7.value) || (surverRoomForm.controls.linear_feet_8_12.value !=0 && !!surverRoomForm.controls.linear_feet_8_12.value ) || (surverRoomForm.controls.linear_feet_12_up.value !=0 && !!surverRoomForm.controls.linear_feet_12_up.value))"
+        (ionChange)="sqFeetChange()"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">linear feet 0-4</ion-label>
+      <ion-input (ionChange)="linearFeetChange()"
+        [disabled]="surverRoomForm.controls.sq_feet.value !=0 && surverRoomForm.controls.sq_feet.value"
+        formControlName="linear_feet_0_4" type="tel"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">linear feet 5-7</ion-label>
+      <ion-input (ionChange)="linearFeetChange()"
+        [disabled]="surverRoomForm.controls.sq_feet.value !=0 && surverRoomForm.controls.sq_feet.value"
+        formControlName="linear_feet_5_7" type="tel"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">linear feet 8-12</ion-label>
+      <ion-input (ionChange)="linearFeetChange()"
+        [disabled]="surverRoomForm.controls.sq_feet.value !=0 && surverRoomForm.controls.sq_feet.value"
+        formControlName="linear_feet_8_12" type="tel"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">linear feet 12 up</ion-label>
+      <ion-input (ionChange)="linearFeetChange()"
+        [disabled]="surverRoomForm.controls.sq_feet.value !=0 && surverRoomForm.controls.sq_feet.value"
+        formControlName="linear_feet_12_up" type="tel"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Ends</ion-label>
+      <!-- <ion-checkbox slot="end" formControlName="assumed"></ion-checkbox> -->
+      <ion-select formControlName="Ends" [disabled]="((surverRoomForm.controls.linear_feet_0_4.value ==0 || !surverRoomForm.controls.linear_feet_0_4.value) 
+      && (surverRoomForm.controls.linear_feet_5_7.value ==0 || !surverRoomForm.controls.linear_feet_5_7.value)
+      && (surverRoomForm.controls.linear_feet_8_12.value ==0 || !surverRoomForm.controls.linear_feet_8_12.value) 
+      && (surverRoomForm.controls.linear_feet_12_up.value ==0 || !surverRoomForm.controls.linear_feet_12_up.value))"
+        (ionChange)="endHangerChange()">
+        <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+          arr.Name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Hangers</ion-label>
+      <!-- <ion-checkbox slot="end" formControlName="assumed"></ion-checkbox> -->
+      <ion-select formControlName="Hangers" [disabled]="((surverRoomForm.controls.linear_feet_0_4.value ==0 || !surverRoomForm.controls.linear_feet_0_4.value) 
+      && (surverRoomForm.controls.linear_feet_5_7.value ==0 || !surverRoomForm.controls.linear_feet_5_7.value)
+      && (surverRoomForm.controls.linear_feet_8_12.value ==0 || !surverRoomForm.controls.linear_feet_8_12.value) 
+      && (surverRoomForm.controls.linear_feet_12_up.value ==0 || !surverRoomForm.controls.linear_feet_12_up.value))"
+        (ionChange)="endHanger()">
+        <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+          arr.Name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item-group class="damage_group_sec">
+      <ion-item-divider>
+        <ion-label class="text_group_name">Damage</ion-label>
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Damage Puncture</ion-label>
+        <ion-select formControlName="damage_puncture">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+            arr.Name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Damage Vibration</ion-label>
+        <ion-select formControlName="damage_vibration">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+            arr.Name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Damage Water</ion-label>
+        <ion-select formControlName="damage_water">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+            arr.Name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Damage Air</ion-label>
+        <ion-select formControlName="damage_air">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+            arr.Name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Damage Delamination</ion-label>
+        <ion-select formControlName="damage_delamination">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+            arr.Name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Damage Slow Deterioration</ion-label>
+        <ion-select formControlName="damage_slow_deterioration">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+            arr.Name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Damage Use Wear</ion-label>
+        <ion-select formControlName="damage_use_wear">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_close_ended_data']" value="{{ arr.Id }}">{{
+            arr.Name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+    </ion-item-group>
+
+    <ion-item-group *ngIf="showDamageFields();" class="damage_scope_group">
+      <ion-item-divider>
+        <ion-label class="text_group_name">Damage Scope</ion-label>
+      </ion-item-divider>
+
+      <ion-item *ngIf="showDamageFields();">
+        <ion-label>Damage Extent</ion-label>
+        <ion-select formControlName="damage_extent">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_damage_extent']" value="{{ arr.Id }}">{{ arr.Name
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item *ngIf="showDamageFields();" [class.invalid]="
+      (!surverRoomForm.controls.damage_feet.valid ||
+        surverRoomForm.controls.damage_feet.errors?.pattern) &&
+      (surverRoomForm.controls.damage_feet.dirty || submitAttempt)
+    ">
+        <ion-label position="floating">Damage Feet</ion-label>
+        <ion-input formControlName="damage_feet" type="tel"> </ion-input>
+      </ion-item>
+
+    </ion-item-group>
+
+    <ion-item-group class="access_group_sec">
+      <ion-item-divider>
+        <ion-label class="text_group_name">Access</ion-label>
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Access</ion-label>
+        <ion-select formControlName="access">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_access']" value="{{ arr.Id }}">{{ arr.Name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Access Frequency</ion-label>
+        <ion-select formControlName="access_frequency">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_frequency_data']" value="{{ arr.Id }}">{{
+            arr.Name
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-item-group>
+
+    <ion-item-group class="risk_group_sec">
+      <ion-item-divider>
+        <ion-label class="text_group_name">Risk</ion-label>
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Risk Vibration</ion-label>
+        <ion-select formControlName="risk_vibration">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_frequency_data']" value="{{ arr.Id }}">{{
+            arr.Name
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Risk Air Move</ion-label>
+        <ion-select formControlName="risk_air_move">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_frequency_data']" value="{{ arr.Id }}">{{
+            arr.Name
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Risk Dist Potential</ion-label>
+        <ion-select formControlName="risk_dist_potential">
+          <ion-select-option *ngFor="let arr of SurveyDropDown['survey_frequency_data']" value="{{ arr.Id }}">{{
+            arr.Name
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+    </ion-item-group>
+
+    <ion-item>
+      <ion-label>Acm Condition</ion-label>
+      <ion-select formControlName="acm_condition">
+        <ion-select-option *ngFor="let arr of SurveyDropDown['survey_acm_condition']" value="{{ arr.Id }}">{{ arr.Name
+          }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Acm Height</ion-label>
+      <ion-input formControlName="acm_height" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="surverRoomForm.controls.acm_height.hasError('maxlength') && surverRoomForm.controls.acm_height.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="btn-group">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button size="medium" expand="full" color="primary" tappable class="SCA" *ngIf="type == 'add'"
+            (click)="AddSurveyRoom('SCA')">
+            Save & Create Another
+          </ion-button>
+          <ion-button size="medium" expand="full" color="primary" tappable *ngIf="type == 'edit'"
+            (click)="AddSurveyRoom()" [disabled]="!this.inspectionObj.roomGuid">
+            Update
+          </ion-button>
+        </ion-col>
+
+        <ion-col size="6">
+          <div>
+            <ion-button icon-right size="medium" expand="full" color="primary" tappable *ngIf="type == 'add'"
+              (click)="AddSurveyRoom('SR')">
+              Save & Return
+            </ion-button>
+            <ion-button icon-right size="medium" expand="full" color="primary" tappable (click)="goback()"
+              *ngIf="type == 'edit'" [disabled]="!this.inspectionObj.roomGuid">
+              {{ "Login.cancel" | translate }}
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

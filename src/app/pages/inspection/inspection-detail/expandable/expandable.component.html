@@ -1,0 +1,53 @@
+<h2 no-margin class="no-margin" (click)="toggleAccordion()">
+  <ion-text *ngIf="isMandatory == 'true'">*</ion-text>
+  <!-- <p color="medium" [ngClass]="{'noAnswer' : description == '', 'isAnswer' :  description !== ''}">{{name}}</p> -->
+  <!-- <p color="medium"
+    [ngClass]="[(description == '' && arrImage.length == 0 && arrTable.length == 0) ? 'noAnswer' : 'isAnswer']">{{name}}
+  </p> -->
+  <p color="medium"
+    [ngClass]="[ checkIsAnswer(description,arrImage,arrTable)? 'noAnswer' : 'isAnswer']">{{name}}
+  </p>
+  <span *ngIf="isMenuOpen">&#9650;</span>
+  <span *ngIf="!isMenuOpen">&#9660;</span>
+</h2>
+
+<div [ngClass]="this.isMenuOpen ? 'active' : 'inactive'">
+
+
+  <ion-list>
+    <ion-item *ngFor="let objImg of arrImage" lines="none">
+      <ion-thumbnail slot="start">
+        <ion-img [src]="objImg.Path"></ion-img>
+      </ion-thumbnail>
+
+      <ion-label>
+        {{objImg.Name}}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div style="overflow-x:auto;">
+    <table id="t01">
+      <thead>
+        <tr>
+          <th *ngFor="let obj of arrColumn">
+            {{obj}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of arrRow; let i = index;">
+          <td *ngFor="let obj of arrColumn; let j = index;" [style.max-width.px]="tblWidth" [style.width.px]="tblWidth">
+            <ion-text color="primary">{{arrTable[(arrColumn.length * i) + j]}}</ion-text>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!!description">
+    <h3 no-margin class="no-margin">
+      <ion-text color="primary">{{description}}</ion-text>
+    </h3>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+h2 {
+    cursor: pointer;
+    position: relative;
+    padding: 1em 0.35em;
+    font-size: 14px;
+    margin: 0;
+    padding-right: 25px;
+    span {
+       position: absolute;
+       right: 1em;
+       top: 1.2em;
+       font-size: 14px;
+    }
+    p {
+       text-align: justify;
+       width: 85%;
+       margin-top: 0px;
+       margin-left: -10px;
+    }
+    ion-text {
+       margin-left: -15px;
+       color: red;
+       font-size: 20px;
+    }
+ }
+
+ h3 {
+   padding: 0.35em;
+   font-size: 14px;
+ }
+
+ .active {
+    display: block
+ }
+
+ .inactive {
+    display: none;
+ }
+
+ table, th, td {
+   border-collapse: collapse;
+   border-spacing: 0;
+   width: 100%;
+   border: 1px solid var(--ion-color-tertiary);
+}
+
+th,td {
+   padding: 10px;
+}
+
+table#t01 tr:nth-child(even) {
+   background-color: var(--ion-color-secondary);
+}
+
+table#t01 tr:nth-child(odd) {
+   background-color: var(--ion-color-light);
+}
+
+table#t01 th {
+   color: var(--ion-color-secondary);
+   background-color: var(--ion-color-primary);
+}
+
+.isAnswer {
+   color: var(--ion-color-complete);
+}
+
+.noAnswer {
+   color: var(--ion-color-inprogress);
+}

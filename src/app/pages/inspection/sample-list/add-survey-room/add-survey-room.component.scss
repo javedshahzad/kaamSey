@@ -1,0 +1,37 @@
+.invalid {
+    border-bottom: 1px solid #ea6153;
+  }
+  .SCA {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    font-size: 14px;
+  }
+  .damage_scope_group{
+    border: 1px solid gray;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 2% 0;
+  }
+  .damage_group_sec{
+    border: 1px solid gray;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 2% 0;
+  }
+  .access_group_sec{
+    border: 1px solid gray;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 2% 0;
+  }
+  .risk_group_sec{
+     border: 1px solid gray;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 2% 0;
+  }
+  .text_group_name{
+    font-weight: 800;
+    color: black;
+  }

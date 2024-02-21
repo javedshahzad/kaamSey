@@ -1,0 +1,33 @@
+:host {
+    ion-grid {
+        ion-button {
+            --background: transparent;
+            --background-hover: transparent;
+            border: 1px solid var(--ion-color-light);
+            height: 135px;
+        }
+    }
+
+    ion-col {
+        text-align: center;
+
+        .welcome {
+            text-align: right;
+        }
+
+        .name {
+            text-align: left;
+        }
+    }
+
+    ion-label {
+        font-size: 16px;
+    }
+    
+    ion-toolbar {
+        ion-img {
+            width: 22px;
+            height: 22px;
+        }
+    }
+}

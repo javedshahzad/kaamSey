@@ -1,0 +1,109 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-button color="dark" size="small" shape="round" (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">
+          Image List
+        </ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-card class="insQueImgList">
+  <ion-card-content>
+    <ion-text color="primary inspQueImgTitle">Inspection Images</ion-text><br />
+  </ion-card-content>
+</ion-card>
+<ion-content *ngIf="inspectionImgList.length == 0 && isLoading == false">
+  <ion-item lines="none" text-wrap>
+    No image available.
+  </ion-item>
+</ion-content>
+<ion-content *ngIf="inspectionImgList.length > 0 && isLoading == false">
+  <ion-scroll scrollY="true" style="width: 100%; height: 80%;">
+    <ion-item text-wrap *ngFor="let item of inspectionImgList">
+      <ion-thumbnail slot="start">
+        <ion-img [src]="item.Path"></ion-img>
+      </ion-thumbnail>
+      <ion-label> {{item.Name}} </ion-label>
+      <ion-button fill="clear" (click)="editName(item)">
+        <ion-icon slot="icon-only" src="assets/img/photo.svg"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="deleteImage(item)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-scroll>
+</ion-content>
+<div *ngIf="inspectionImgList.length == 0 && isLoading == true">
+  <ion-card no-margin class="no-radius">
+    <ion-item lines="none">
+      <ion-label>
+        <h3 no-margin class="fw700 no-margin">
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </h3>
+
+        <h3 no-margin class="no-margin">
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </h3>
+      </ion-label>
+
+      <ion-button fill="clear" size="large" color="medium">
+        <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+      </ion-button>
+    </ion-item>
+  </ion-card>
+</div>
+
+<ion-card class="insQueImgList">
+  <ion-card-content>
+    <ion-text color="primary inspQueImgTitle">Question Images</ion-text><br />
+  </ion-card-content>
+</ion-card>
+<div *ngIf="(insQueImgList == null || insQueImgList.length == 0) && isLoading == true">
+  <ion-card no-margin class="no-radius">
+    <ion-item lines="none">
+      <ion-label>
+        <h3 no-margin class="fw700 no-margin">
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </h3>
+
+        <h3 no-margin class="no-margin">
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </h3>
+      </ion-label>
+
+      <ion-button fill="clear" size="large" color="medium">
+        <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+      </ion-button>
+    </ion-item>
+  </ion-card>
+</div>
+<ion-content *ngIf="questionImgList.length == 0 && isLoading == false">
+  <ion-item lines="none" text-wrap>
+    No image available.
+  </ion-item>
+</ion-content>
+<ion-content *ngIf="questionImgList.length > 0 && isLoading == false">
+  <ion-scroll scrollY="true" style="width: 100%; height: 100%;">
+    <ion-item text-wrap *ngFor="let item of questionImgList">
+      <ion-thumbnail slot="start">
+        <ion-img [src]="item.Path"></ion-img>
+      </ion-thumbnail>
+      <ion-label> {{item.Name}} </ion-label>
+      <ion-button fill="clear" (click)="editName(item)">
+        <ion-icon slot="icon-only" src="assets/img/photo.svg"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="deleteImage(item)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-scroll>
+</ion-content>

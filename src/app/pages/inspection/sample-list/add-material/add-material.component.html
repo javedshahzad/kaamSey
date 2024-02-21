@@ -1,0 +1,341 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <!-- <ion-buttons slot="start">
+      <ion-back-button
+        icon="arrow-back"
+        size="small"
+        shape="round"
+        color="dark"
+        text=""
+      >
+      </ion-back-button>
+    </ion-buttons> -->
+    <ion-buttons slot="start">
+      <ion-button color="dark" fill="clear" (click)="goback()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">
+          {{ type == "add" ? "Add" : "Edit" }} Material
+        </ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item *ngIf="type == 'edit'">
+    <ion-label>Select Material</ion-label>
+    <ion-select (ionChange)="formAutofill($event)" [(ngModel)]="selectedMaterial">
+      <ion-select-option *ngFor="let arr of materialList" value="{{ arr.Client_Material_Id }}">
+        {{getMaterialNameFormat(arr)}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <form [formGroup]="slideOneForm" *ngIf="inspectionObj && dropDown">
+    <ion-item [class.invalid]="
+        !slideOneForm.controls.client_material_id.valid &&
+        slideOneForm.controls.client_material_id.errors?.pattern &&
+        (slideOneForm.controls.client_material_id.dirty || submitAttempt)
+      ">
+      <ion-label>Material Id -</ion-label>
+      <ion-input formControlName="client_material_id" type="tel" [disabled]="type == 'edit' && !selectedMaterial">
+      </ion-input>
+    </ion-item>
+
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.client_material_id.hasError('maxlength') && slideOneForm.controls.client_material_id.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 50.
+      </ion-text>
+    </p>
+
+    <ion-item [class.invalid]="
+        !slideOneForm.controls.material.valid &&
+        (slideOneForm.controls.material.dirty || submitAttempt)">
+      <ion-label>Material</ion-label>
+      <ionic-selectable formControlName="material" [canClear]="true" [items]="dropDown['Material']"
+        itemValueField="Name" itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true"
+        [disabled]="type == 'edit' && !selectedMaterial" closeButtonSlot="end" (onChange)="changeMaterial()">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.material.hasError('maxlength') && slideOneForm.controls.material.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="
+    showOtherMaterial" [class.invalid]="
+    !slideOneForm.controls.Other_Material.valid &&
+    (slideOneForm.controls.Other_Material.dirty || submitAttempt)
+  ">
+      <ion-label position="floating">Other Material</ion-label>
+      <ion-input formControlName="Other_Material" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.Other_Material.hasError('maxlength') && slideOneForm.controls.Other_Material.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+
+    <ion-item>
+      <ion-label>Material sub</ion-label>
+      <ionic-selectable formControlName="material_sub" [canClear]="true" [items]="subMaterialList"
+        itemValueField="Material_Sub" itemTextField="Material_Sub" [shouldStoreItemValue]="true" [canSearch]="true"
+        [disabled]="type == 'edit' && !selectedMaterial" closeButtonSlot="end" (onChange)="changeSubMaterial($event)">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.material_sub.hasError('maxlength') && slideOneForm.controls.material_sub.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label>Classification</ion-label>
+      <ionic-selectable formControlName="classification" [canClear]="true" [items]="dropDown['Classification']"
+        itemValueField="Name" itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true"
+        [disabled]="type == 'edit' && !selectedMaterial" closeButtonSlot="end">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.classification.hasError('maxlength') && slideOneForm.controls.classification.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label>Friable</ion-label>
+      <ionic-selectable formControlName="friable" [canClear]="true" [items]="dropDown['Friable']" itemValueField="Name"
+        itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true"
+        [disabled]="type == 'edit' && !selectedMaterial" closeButtonSlot="end">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.friable.hasError('maxlength') && slideOneForm.controls.friable.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label>Units</ion-label>
+      <ionic-selectable formControlName="units" [canClear]="true" [items]="dropDown['Units']" itemValueField="Name"
+        itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true"
+        [disabled]="type == 'edit' && !selectedMaterial" closeButtonSlot="end">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.units.hasError('maxlength') && slideOneForm.controls.units.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label>Size</ion-label>
+      <ionic-selectable formControlName="size" [canClear]="true" [items]="dropDown['Size']" itemValueField="Name"
+        itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true"
+        [disabled]="type == 'edit' && !selectedMaterial" closeButtonSlot="end">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.size.hasError('maxlength') && slideOneForm.controls.size.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item [class.invalid]="
+        (!slideOneForm.controls.quantity.valid ||
+          slideOneForm.controls.quantity.errors?.pattern) &&
+        (slideOneForm.controls.quantity.dirty || submitAttempt)
+      ">
+      <ion-label position="floating">Quantity</ion-label>
+      <ion-input formControlName="quantity" type="tel" [disabled]="type == 'edit' && !selectedMaterial">
+      </ion-input>
+    </ion-item>
+
+    <ion-item [class.invalid]="
+    !slideOneForm.controls.color.valid &&
+    (slideOneForm.controls.color.dirty || submitAttempt)">
+      <ion-label>Color</ion-label>
+      <ionic-selectable formControlName="color" [canClear]="true" [items]="dropDown['Color']" itemValueField="Name"
+        itemTextField="Name" [hasVirtualScroll]="true" [shouldStoreItemValue]="true" [canSearch]="true"
+        (onChange)="changeColor()" [disabled]="type == 'edit' && !selectedMaterial" closeButtonSlot="end">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.color.hasError('maxlength') && slideOneForm.controls.color.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="
+    showOtherColor" [class.invalid]="
+    !slideOneForm.controls.Other_color.valid &&
+    (slideOneForm.controls.Other_color.dirty || submitAttempt)
+  ">
+      <ion-label position="floating">Other Color</ion-label>
+      <ion-input formControlName="Other_color" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.Other_color.hasError('maxlength') && slideOneForm.controls.Other_color.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 100.
+      </ion-text>
+    </p>
+
+    <div class="note1Section">
+      <ion-item>
+        <ion-label position="floating">Note 1</ion-label>
+        <ion-input formControlName="note1" type="text" [disabled]="type == 'edit' && !selectedMaterial"
+          (ionChange)="viewSuggestion()" (ionBlur)="removeSuggestion()">
+        </ion-input>
+      </ion-item>
+      <ion-list class="note1Sugg" *ngIf="showNote1SuggList">
+        <ion-item *ngFor="let itemVal of note1SuggList" (click)="add(itemVal)">
+          {{itemVal}}
+        </ion-item>
+      </ion-list>
+    </div>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.note1.hasError('maxlength') && slideOneForm.controls.note1.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label position="floating">Note 2</ion-label>
+      <ion-input formControlName="note2" type="text" [disabled]="type == 'edit' && !selectedMaterial">
+      </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.note2.hasError('maxlength') && slideOneForm.controls.note2.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item>
+      <ion-label>Assumed</ion-label>
+      <ion-toggle formControlName="assumed" [disabled]="type == 'edit' && !selectedMaterial"></ion-toggle>
+    </ion-item>
+
+    <ion-item [class.invalid]="
+    !slideOneForm.controls.location.valid &&
+    (slideOneForm.controls.location.dirty || submitAttempt)">
+      <ion-label>Material location</ion-label>
+      <ionic-selectable formControlName="location" [isMultiple]="true" [canClear]="true" [items]="materialLocation"
+        itemValueField="Id" itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true"
+        [disabled]="type == 'edit' && !selectedMaterial" closeButtonSlot="end" (onChange)="changeMatLoc()">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.location.hasError('maxlength') && slideOneForm.controls.location.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <ion-item *ngIf="showOtherLocation" 
+    [class.invalid]="!slideOneForm.controls.Other_location.valid && (slideOneForm.controls.Other_location.dirty || submitAttempt)">
+      <ion-label position="floating">Other Location</ion-label>
+      <ion-input formControlName="Other_location" type="text"> </ion-input>
+    </ion-item>
+    <p ion-text class="text08"
+      *ngIf="slideOneForm.controls.Other_location.hasError('maxlength') && slideOneForm.controls.Other_location.touched">
+      <ion-text color="danger">
+        Maximum allowed character is 255.
+      </ion-text>
+    </p>
+
+    <div>
+      <ion-button size="medium" expand="full" color="primary" (click)="selectImage()" tappable>
+        {{'Material.uploadButton' | translate}}
+      </ion-button>
+
+      <ion-list>
+        <ion-item *ngFor="let objImg of arrImage; index as pos" text-wrap>
+          <ion-thumbnail slot="start">
+            <ion-img *ngIf="objImg.Path" [src]="objImg.Path"></ion-img>
+            <img *ngIf="!objImg.Path" src="../../../../../assets/img/DefaultImage.png">
+          </ion-thumbnail>
+
+          <ion-label class="display_img_name">
+            {{objImg.displayName}}
+          </ion-label>
+
+          <ion-button slot="end" fill="clear" (click)="deleteImage(objImg, pos)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </div>
+
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="btn-group">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button size="medium" expand="full" color="primary" tappable class="SCA" *ngIf="type == 'add'"
+            [disabled]="isSubmitClicked" (click)="AddMaterial('SCA')">
+            Save & Create Another
+          </ion-button>
+          <ion-button size="medium" expand="full" color="primary" tappable *ngIf="type == 'edit'"
+            (click)="AddMaterial()" [disabled]="!this.inspectionObj.Client_Material_Id">
+            Save
+          </ion-button>
+        </ion-col>
+
+        <ion-col size="6">
+          <div>
+            <ion-button icon-right size="medium" expand="full" color="primary" [disabled]="isSubmitClicked" tappable
+              *ngIf="type == 'add'" (click)="AddMaterial('SR')">
+              Save & Return
+            </ion-button>
+            <ion-button icon-right size="medium" expand="full" color="primary" tappable (click)="showsample()"
+              *ngIf="type == 'edit'" [disabled]="!this.inspectionObj.Client_Material_Id">
+              Show samples
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

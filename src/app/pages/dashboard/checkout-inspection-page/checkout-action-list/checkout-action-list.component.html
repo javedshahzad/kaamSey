@@ -1,0 +1,12 @@
+<ion-list class="checkoutActions">
+  <ion-item (click)="checkoutActionEvent(actionTypeEnum.Checkout)">
+    <ion-icon src="assets/img/download.svg"></ion-icon> Checkout
+  </ion-item>
+  <ion-item (click)="checkoutActionEvent(actionTypeEnum.InspectionPdf)" *ngIf="inspectionObj.Status == objStatusType.Uploaded">
+    <ion-icon name="download"></ion-icon> Inspection Pdf
+  </ion-item>
+  <ion-item (click)="checkoutActionEvent(actionTypeEnum.RentalPdf)"
+    *ngIf="inspectionObj.Status == objStatusType.Uploaded && inspectionObj.InspectionTypeId == '2'">
+    <ion-icon name="code-download"></ion-icon> Rental Pdf
+  </ion-item>
+</ion-list>

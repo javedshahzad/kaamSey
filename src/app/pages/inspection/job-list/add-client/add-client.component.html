@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-button color="dark" fill="clear" (click)="goBack()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text class="headr_title" color="dark">
+          {{'JobList.addClient' | translate}}
+        </ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  <form [formGroup]="clientAddForm" *ngIf="clientAddForm">
+
+
+    <ion-item>
+      <ion-label position="floating">Client Name</ion-label>
+      <ion-input formControlName="clientName" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Main Phone</ion-label>
+      <ion-input formControlName="phoneNo" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Contact Name</ion-label>
+      <ion-input formControlName="contactName" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Contact Email</ion-label>
+      <ion-input formControlName="contactEmail" type="text"> </ion-input>
+    </ion-item>
+
+
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="btn-group">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button icon-right size="medium" expand="full" color="primary" tappable (click)="goBack()">
+            {{ "Login.cancel" | translate }}
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <div>
+            <ion-button size="medium" expand="full" color="primary" tappable (click)="submit()" class="SCA">
+              Save
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

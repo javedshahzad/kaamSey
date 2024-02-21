@@ -1,0 +1,122 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button icon="arrow-back" size="small" shape="round" color="dark" text="">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">{{'Inspection.checkouttitle' | translate}}</ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" [disabled]="!jobid">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="10">
+        <ion-searchbar placeholder="{{'Inspection.checkoutsearch' | translate}}" #search type="number"
+          (ionChange)="clearInput(search)" (ionClear)="clearInput(search)" [(ngModel)]="jobid">
+        </ion-searchbar>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button size="medium" class="find" (click)="Find(search)">
+          Find
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <div *ngIf="arrInspection && isLoading == false">
+    <ion-card no-margin class="no-radius">
+      <ion-item lines="none">
+        <ion-label>
+          <h2 no-margin class="fw700 no-margin">
+            <ion-text color="primary">Job Number - {{arrInspection.JobId}}</ion-text>
+          </h2>
+
+          <h3 no-margin class="no-margin">
+            <!-- <ion-datetime readonly display-format="MMM DD, YYYY" value="{{arrInspection.InspectionDate}}">
+            </ion-datetime> -->
+            {{arrInspection.InspectionDate | date:'fullDate'}}
+          </h3>
+
+          <p class="no-margin" [ngClass]="{'draft': arrInspection.Status == objStatusType.Draft,
+                                        'inprogress': arrInspection.Status == objStatusType.InProgress,
+                                        'uploaded': arrInspection.Status == objStatusType.Uploaded,
+                                        'complete': arrInspection.Status == objStatusType.Complete}">
+            <ion-text> {{(arrInspection.Status == 0 ? objStatusType.InProgress.toString()  : arrInspection.Status.toString()) | translate}}</ion-text>
+           
+          </p>
+        </ion-label>
+
+        <ion-button fill="clear" size="large" color="medium" (click)="showCheckoutActions($event,arrInspection)">
+          <ion-icon name="ellipsis-vertical"></ion-icon>
+        </ion-button>
+
+        <!-- <ion-button fill="clear" size="large" color="medium" (click)="checkArchiveList(arrInspection)">
+          <ion-icon src="assets/img/download.svg"></ion-icon>
+        </ion-button>
+
+        <ion-button fill="clear" size="large" color="medium" [disabled]="this.pdfDownloadService.progressBar"
+          *ngIf="arrInspection.Status == objStatusType.Uploaded" (click)="downloadAllQuestion(arrInspection)">
+          <ion-icon name="download"></ion-icon>
+        </ion-button>
+
+        <ion-button fill="clear" size="large" color="medium" [disabled]="this.pdfDownloadService.progressBar"
+          *ngIf="arrInspection.Status == objStatusType.Uploaded && arrInspection.InspectionTypeId == '2'"
+          (click)="downloadRentalQuestion(arrInspection)">
+          <ion-icon name="code-download"></ion-icon>
+        </ion-button> -->
+
+        <!-- <ion-button fill="clear" size="large" color="medium" [disabled]="this.pdfDownloadService.progressBar"
+          *ngIf="arrInspection.Status == objStatusType.Uploaded && arrInspection.InspectionTypeId == '1'"
+          (click)="downloadWaterQuestion(arrInspection)">
+          <ion-icon name="cloud-download"></ion-icon>
+        </ion-button> -->
+
+      </ion-item>
+      <ion-progress-bar *ngIf="this.pdfDownloadService.progressBar " type="indeterminate"></ion-progress-bar>
+    </ion-card>
+  </div>
+  <!-- <ion-button fill="clear" size="large" color="medium" (click)="sign()">
+    Add Signature
+  </ion-button>
+  <div><img [src]="signatureImage" *ngIf="signatureImage" /></div> -->
+  <div *ngIf="isLoading == true">
+    <ion-card>
+      <ion-item lines="none">
+        <ion-label>
+          <h2 no-margin class="fw700 no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </h2>
+
+          <h3 no-margin class="no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </h3>
+
+          <p class="no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </p>
+        </ion-label>
+
+        <p>
+          <ion-skeleton-text animated style="width: 25px; height: 25px;"></ion-skeleton-text>
+        </p>
+
+        <ion-button fill="clear" size="large" color="medium">
+          <ion-skeleton-text animated style="width: 25px; height: 25px;"></ion-skeleton-text>
+        </ion-button>
+      </ion-item>
+    </ion-card>
+  </div>
+
+  <div *ngIf="errMessage">
+    <ion-text color="tertiary">{{'InspectionDetail.noRecord' | translate}}</ion-text>
+  </div>
+</ion-content>

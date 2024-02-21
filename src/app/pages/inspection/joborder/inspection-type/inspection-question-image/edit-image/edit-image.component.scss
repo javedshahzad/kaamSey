@@ -1,0 +1,25 @@
+.imgSection {
+    width: 100%;
+  
+      ion-input {
+          padding: 1px !important;
+      }
+  
+    ion-list {
+        position: absolute;
+        width: 100%;
+        overflow-y: scroll;
+        max-height: 180px;
+        border: 5px;
+        z-index: 999;
+
+        ion-item {
+            background: #f1f1f1;
+        }
+  
+        ion-item:hover {
+            cursor: pointer;
+            background: #dddddd
+        }
+    }
+  }

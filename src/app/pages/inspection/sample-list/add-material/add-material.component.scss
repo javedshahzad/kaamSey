@@ -1,0 +1,40 @@
+.invalid {
+  border-bottom: 1px solid #ea6153;
+}
+.SCA {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  font-size: 14px;
+}
+.display_img_name{
+  white-space: initial;
+}
+
+
+
+.note1Section {
+  width: 100%;
+
+    ion-input {
+        padding: 1px !important;
+    }
+
+  ion-list {
+      position: absolute;
+      width: 93%;
+      overflow-y: scroll;
+      max-height: 100%;
+      border: 5px;
+      z-index: 999;
+
+      ion-item {
+          background: #f1f1f1;
+      }
+
+      ion-item:hover {
+          cursor: pointer;
+          background: #dddddd
+      }
+  }
+}

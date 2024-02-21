@@ -1,0 +1,28 @@
+:host {
+    ion-item {
+        ion-text {
+            margin-top: 15px;
+        }
+    }
+
+    .label-font {
+        font-size: 14px !important;
+    }
+
+    ion-list {
+        background: none;
+    }
+
+    div {
+        ion-button {
+            padding: 0 15px;
+        }
+    }
+
+    .addrRow{
+        ion-item{
+            width : 100%;
+            margin-top: 15px;
+        }
+    }
+}

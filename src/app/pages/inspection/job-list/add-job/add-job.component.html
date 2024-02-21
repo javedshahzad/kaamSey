@@ -1,0 +1,185 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-button color="dark" fill="clear" (click)="goBack()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text class="headr_title" color="dark">
+          {{
+          jobListObj.title == "add"
+          ? ("JobList.addTitle" | translate)
+          : ("JobList.editTitle" | translate)
+          }}
+        </ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form [formGroup]="slideOneForm" *ngIf="slideOneForm">
+    <ion-item>
+      <ion-label>Client Name</ion-label>
+      <ionic-selectable formControlName="client_id" (onClear)="clearSel($event)" [canClear]="true" [items]="clientList" itemValueField="Id"
+        itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true" closeButtonSlot="end"
+        (onSearchFail)="onSearchFail($event)" [hasVirtualScroll]="true"  #mySelectable>
+        <ng-template ionicSelectableCloseButtonTemplate >
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+        <ng-template ionicSelectableAddItemTemplate>
+          <ion-content padding>
+            <form [formGroup]="clientAddForm" *ngIf="clientAddForm">
+              <ion-list>
+                <ion-list-header>
+                  No client found. Would you like to create new client?
+                </ion-list-header>
+                
+                <ion-item>
+                  <ion-label position="floating">Client Name</ion-label>
+                  <ion-input formControlName="clientName" type="text"> </ion-input>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label position="floating">Main Phone</ion-label>
+                  <ion-input formControlName="phoneNo" type="text"> </ion-input>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label position="floating">Contact Name</ion-label>
+                  <ion-input formControlName="contactName" type="text"> </ion-input>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label position="floating">Contact Email</ion-label>
+                  <ion-input formControlName="contactEmail" type="text"> </ion-input>
+                </ion-item>
+              </ion-list>
+            </form>
+          </ion-content>
+          <ion-footer>
+            <ion-toolbar>
+              <ion-grid class="btn-group">
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-button icon-right size="medium" expand="full" color="primary" tappable
+                      (click)="closeSaveClient()">
+                      {{ "Login.cancel" | translate }}
+                    </ion-button>
+                  </ion-col>
+                  <ion-col size="6">
+                    <div>
+                      <ion-button size="medium" expand="full" color="primary" tappable (click)="saveClient()"
+                        class="SCA" [disabled]="!clientAddForm.valid">
+                        Save
+                      </ion-button>
+                    </div>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-toolbar>
+          </ion-footer>
+        </ng-template>
+      </ionic-selectable>
+
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Service</ion-label>
+      <ionic-selectable formControlName="service_id" [isMultiple]="true" [canClear]="true" [items]="serviceList"
+        itemValueField="Id" itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true" closeButtonSlot="end"
+        (onChange)="changeService($event)">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+
+    <ion-item [class.invalid]="
+    !slideOneForm.controls.FacilityAddress.valid &&
+    (slideOneForm.controls.FacilityAddress.dirty || submitAttempt)">
+      <ion-label position="floating">Address</ion-label>
+      <ion-input formControlName="FacilityAddress" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item [class.invalid]="
+    !slideOneForm.controls.FacilityState.valid &&
+    (slideOneForm.controls.FacilityState.dirty || submitAttempt)">
+      <ion-label position="floating">State</ion-label>
+      <ion-input formControlName="FacilityState" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item [class.invalid]="
+    !slideOneForm.controls.FacilityCity.valid &&
+    (slideOneForm.controls.FacilityCity.dirty || submitAttempt)">
+      <ion-label position="floating">City</ion-label>
+      <ion-input formControlName="FacilityCity" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Zip</ion-label>
+      <ion-input formControlName="FacilityZip" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Technician</ion-label>
+      <ionic-selectable formControlName="technician" [isMultiple]="true" [canClear]="true" [items]="technicianList"
+        itemValueField="Id" itemTextField="Name" [shouldStoreItemValue]="true" [canSearch]="true" closeButtonSlot="end"
+        (onChange)="changeTechnician($event)">
+        <ng-template ionicSelectableCloseButtonTemplate>
+          <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Onsite person</ion-label>
+      <ion-input formControlName="onsite_person" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Onsite phone</ion-label>
+      <ion-input formControlName="onsite_phone" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Property unit</ion-label>
+      <ion-input formControlName="property_unit" type="text"> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Scheduled date</ion-label>
+      <ion-datetime display-format="MMM DD, YYYY hh:mm:ss" picker-format="MMM DD, YYYY hh:mm:ss" locale="en-US"
+        formControlName="date_scheduled">
+      </ion-datetime>
+    </ion-item>
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="btn-group">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button size="medium" expand="full" color="primary" tappable (click)="submit('SCA')"
+            *ngIf="jobListObj.title == 'add'" class="SCA">
+            Save & Create Another
+          </ion-button>
+          <ion-button size="medium" expand="full" color="primary" tappable (click)="goBack()"
+            *ngIf="jobListObj.title != 'add'">
+            {{ "Login.cancel" | translate }}
+          </ion-button>
+        </ion-col>
+
+        <ion-col size="6">
+          <div>
+            <ion-button icon-right size="medium" expand="full" color="primary" tappable (click)="submit('SR')">
+              {{ jobListObj.title == "add" ? "Save & Return" : "Update" }}
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

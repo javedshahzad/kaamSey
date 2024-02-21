@@ -1,0 +1,30 @@
+.invalid {
+    border-bottom: 1px solid #ea6153;
+  }
+  .SCA {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    font-size: 14px;
+  }
+  
+  .image_sec{
+    align-items: end;
+    text-align: end;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 22px;
+    margin-top: 9px;
+  }
+  .dropdown_main_section {
+    border-bottom: 1px solid #dfdfdf;
+    padding-bottom: 15px;
+    outline: 0px;
+  }
+  .image_main_section{
+    border: 1px solid gray;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+  }
+  

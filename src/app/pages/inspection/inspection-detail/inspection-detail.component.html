@@ -1,0 +1,194 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-button size="small" shape="round" color="dark" (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">{{'InspectionDetail.title' | translate}}</ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="isLoading == false">
+    <ion-card class="noteCard">
+      <ion-card-content>
+        <ion-text><span class="red">*</span> : Mandatory question</ion-text><br>
+        <ion-text><span class="orange">Orange</span> : Still answer not given</ion-text><br>
+        <ion-text><span class="green">Green</span> : Answer has been given</ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- <ion-grid>
+      <ion-row class="row_sec">
+      
+          <ion-col size="6">
+            <h3 no-margin class="fw600 jonNumberMargin">
+              <ion-text color="primary">Job Number - {{obj.JobId}}</ion-text>
+            </h3>
+          </ion-col>
+          <ion-col size="4">
+            <h3 no-margin class="dateMargin">
+              <ion-datetime readonly display-format="MMM DD, YYYY" value="{{obj.InspectionDate}}">
+              </ion-datetime>
+            </h3>
+          </ion-col>
+          
+            <ion-button  class="edit_btn" fill="clear" size="large" color="medium" (click)="editJobNumber(obj)">
+              <ion-icon name="create" mode="ios"></ion-icon>
+            </ion-button>
+         
+       
+      </ion-row>
+
+      <ion-row class="row_sec">
+        <ion-col size="9">
+          <h3 no-margin class="fw600 jonNumberMargin">
+            <ion-text color="primary">Address - {{obj.Address}}</ion-text>
+          </h3>
+        </ion-col>
+  
+        <ion-col size="3" class="edit_col_add">
+          <ion-button  fill="clear" size="large" color="medium" (click)="editAddress(obj)">
+            <ion-icon name="create" mode="ios" class="edit_add"></ion-icon>
+          </ion-button>
+        </ion-col>
+       
+      </ion-row>
+
+    </ion-grid> -->
+
+    <!-- <ion-grid>
+      <ion-row>
+         <ion-col size="12">
+            <ion-item lines="none">
+              <ion-label class="fw700" color="primary" slot="start">
+                <ion-text color="primary">Job Number - {{obj.JobId}}</ion-text>
+              </ion-label>
+                <ion-button slot="end" *ngIf="obj.IsSync=='false' && !this.isCreateJobCheckin" class="edit_job_number"
+                style="top: 3px !important;" slot="end" fill="clear" size="large" color="medium" (click)="editJobNumber(obj)">
+                <ion-icon name="create" mode="ios"></ion-icon>
+              </ion-button>
+            </ion-item>
+         </ion-col>
+  
+          <ion-col size="12">
+            <ion-label class="fw700" color="primary"
+            [ngClass]="{'my_class' : obj.IsSync=='true', 'ion-text-right' : this.isCreateJobCheckin}">
+            <ion-datetime readonly="true" display-format="MMM DD, YYYY" value="{{obj.InspectionDate}}">
+            </ion-datetime>
+          </ion-label>
+          </ion-col>
+
+      </ion-row>
+    </ion-grid> -->
+
+    <ion-list>
+      <ion-item lines="none">
+        <ion-label class="fw700" color="primary">
+          <ion-text color="primary">Job Number - {{obj.JobId}}</ion-text>
+          <h3  class="fw700" color="primary"
+          [ngClass]="{'my_class' : obj.IsSync=='true', 'ion-text-right' : this.isCreateJobCheckin}"> {{obj.InspectionDate | date:'fullDate'}}</h3>
+        </ion-label>
+
+        <!-- <ion-label>
+          <ion-datetime readonly display-format="MMM DD, YYYY" value="{{obj.InspectionDate}}">
+          </ion-datetime>
+         
+        </ion-label> -->
+
+        <ion-button *ngIf="obj.IsSync=='false' && !this.isCreateJobCheckin" class="edit_job_number"
+          style="top: 3px !important;" slot="end" fill="clear" size="large" color="medium" (click)="editJobNumber(obj)">
+         &nbsp; <ion-icon name="create" mode="ios"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label color="primary" class="fw700 address_lbl">
+          <ion-text color="primary">Address - {{obj.Address}}</ion-text>
+        </ion-label>
+
+        <ion-button slot="end" fill="clear" size="large" color="medium" (click)="editAddress(obj)" *ngIf="!action">
+          &nbsp; <ion-icon name="create" mode="ios"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+
+    <div *ngIf="arrInspectionDetail.length == 0 && isLoading == false">
+      <ion-text color="tertiary">{{'InspectionDetail.noRecord' | translate}}</ion-text>
+    </div>
+
+    <ion-list *ngFor="let obj of arrGroups;">
+      <ion-item-divider>
+        <ion-label class="fw700" color="primary">
+          {{obj.groupName}}
+        </ion-label>
+
+        <ion-button slot="end" fill="clear" size="large" color="medium" (click)="editGroup(obj)" *ngIf="!action">
+          &nbsp; <ion-icon name="create" mode="ios"></ion-icon>
+        </ion-button>
+      </ion-item-divider>
+
+      <div *ngFor="let objDetail of arrInspectionDetail; let i = index;">
+        <div *ngIf="obj.groupName == objDetail.GroupName  && !!objDetail.Question">
+          <ion-card no-margin class="no-radius">
+            <app-expandable name="{{'Q'+(i+1)+'. '+ objDetail.Question}}" isMandatory="{{objDetail.IsMandatory}}"
+              description="{{objDetail.Answer}}" [arrImage]="objDetail.Image" [arrTable]="objDetail.Table"
+              [arrColumn]="objDetail.Column" [arrRow]="objDetail.Row">
+            </app-expandable>
+
+            <ion-button fill="clear" size="large" color="medium"
+              (click)="edit(objDetail.Guid, objDetail.QuestionGuid, obj)" *ngIf="!action">
+              &nbsp; <ion-icon name="create" mode="ios"></ion-icon>
+            </ion-button>
+          </ion-card>
+        </div>
+      </div>
+    </ion-list>
+  </div>
+
+  <div *ngIf="isLoading == true">
+    <ion-card class="noteCard">
+      <ion-card-content>
+        <ion-skeleton-text animated style="width: 100%;"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%;"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%;"></ion-skeleton-text>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="8">
+          <h3 no-margin class="fw600 jonNumberMargin">
+            <ion-skeleton-text animated style="width: 100%;"></ion-skeleton-text>
+          </h3>
+        </ion-col>
+        <ion-col size="4">
+          <h3 no-margin class="dateMargin">
+            <ion-skeleton-text animated style="width: 100%;"></ion-skeleton-text>
+          </h3>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-item-group *ngFor="let obj of [1,2,3,4,5,6,7,8,9,10];">
+      <ion-item-divider>
+        <ion-skeleton-text animated style="width: 100%; height: 25px;"></ion-skeleton-text>
+
+        <ion-button fill="clear" size="large" color="medium">
+          <ion-skeleton-text animated style="width: 25px; height: 25px;"></ion-skeleton-text>
+        </ion-button>
+      </ion-item-divider>
+    </ion-item-group>
+  </div>
+</ion-content>

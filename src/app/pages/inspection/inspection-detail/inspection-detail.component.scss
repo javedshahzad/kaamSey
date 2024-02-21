@@ -1,0 +1,123 @@
+:host {
+    ion-card {
+        padding: 0 0 10px 20px;
+        
+        &.no-radius {
+            border-radius: 0;
+            box-shadow: none;
+            border-top: 1px solid var(--ion-color-light);
+            border-bottom: 1px solid var(--ion-color-light);
+        }
+        border-left: 3px solid var(--ion-color-dark);
+    }
+
+    .noteCard {
+        padding: 0 0 0 0 !important;
+        border-left: 0px !important;
+        
+        ion-text {
+            .red {
+                color: red;
+                font-size: 20px;
+            }
+            .orange {
+                color: var(--ion-color-inprogress);
+            }
+            .green {
+                color: var(--ion-color-complete);
+            }
+        }
+        &.sc-ion-card-md-h, &.sc-ion-card-ios-h {
+            -webkit-margin-start: 0px; 
+            margin-inline-start: 0px; 
+            -webkit-margin-end: 0px; 
+            margin-inline-end: 0px; 
+        }
+    }
+
+    h3 {
+        ion-text {
+            font-size: 16px;
+        }
+    }
+
+    h2 {
+        ion-text {
+            font-size: 14px;
+        }
+    }
+
+    div {
+        ion-text {
+            font-size: 14px;
+            text-align: center;
+        }
+    }
+
+    ion-datetime {
+        color: var(--ion-color-primary) !important;
+        font-size: 14px;
+        // float: right;
+        // padding: 4px 0 0 0;
+        padding-bottom: 8px;    
+    }
+
+    ion-list {
+        ion-button {
+            ion-icon {
+                position: absolute;
+                right: 0;
+            }
+            position: absolute;
+            right: 30px;
+            
+            z-index: 99;
+            top: -3px;
+        }
+    }
+
+    ion-item-divider {
+        background-color: #eee;
+    }
+
+    .jonNumberMargin {
+        margin-left: -9px;
+        margin-left: -9px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .dateMargin {
+        margin-right: -9px;
+    }
+    .section_edit{
+        display: flex;
+        align-items: center;
+        text-align: left;
+        justify-content: space-between;
+    }
+    .row_sec{
+        align-items: center;
+    }
+    .edit_job_number{
+        top: 3px !important;
+    }
+    .edit_btn{
+        --padding-start: 0.7em !important;
+
+    }
+    ion-icon.edit_add{
+        margin-right: 3px;
+    }
+    .edit_col_add{
+        text-align: end;
+    }
+    .my_class{
+        float: right;
+        text-align: end;
+    }
+    .address_lbl{
+        max-width: 86% !important;
+    }
+}

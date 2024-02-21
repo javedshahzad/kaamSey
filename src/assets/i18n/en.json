@@ -1,0 +1,184 @@
+{
+	"General": {
+		"tabHome": "Dashboard",
+		"tabInspection": "Inspection",
+		"tabLogout": "Logout",
+		"tabSetting": "Settings",
+		"noConnection": "You have no network connection. Try again later.",
+		"error": "Sorry, something went wrong. Try again later",
+		"exitApp": "Press back again to exit App.",
+		"location": "Please wait we are getting location. So try after a moment.",
+		"serverIssue": "Server is not responding due to network issues. You can try again in few minutes but please contact your system administrator if problem persists.",
+		"noInternet": "Internet is not connected. Please connect and try again."
+	},
+	"Login": {
+		"title": "KaamSey",
+		"username": "Enter Username",
+		"password": "Enter Password",
+		"companycode": "Enter Company Code",
+		"companycodeEmpty": "Plesae add company code",
+		"usernameEmpty": "Please add username",
+		"emailInvalid": "Please enter valid email",
+		"passwordEmpty": "Please add password",
+		"passwordError": "Password should include at least 6 characters length",
+		"error": "Incorrect credentials",
+		"forgot": "Forgot Password?",
+		"message": "Enter you email address to send a link to reset password.",
+		"email": "Email",
+		"success": "Email was sended successfully.",
+		"cancel": "Cancel",
+		"confirm": "Confirm",
+		"loginButton": "LOGIN",
+		"inActiveEmpMsg": "You do not appear to be active employee of the company. If you think this message is coming in error, please contact your system administrator"
+	},
+	"Dashboard": {
+		"title": "Dashboard",
+		"welcome": "Welcome :",
+		"searchInspection": "Search Inspection",
+		"checkoutInspection": "Checkout inspection",
+		"startInspection": "Start Inspection",
+		"addInspection": "Add Inspection",
+		"sync": "Sync Configuration",
+		"logout": "Logout",
+		"viewArchieved": "View Archived inspections",
+		"viewJobs": "My Jobs",
+		"addJob": "Add Job",
+		"shipmentTracking":"Shipment Tracking"
+	},
+	"Inspection": {
+		"title": "Inspection List",
+		"archiveTitle": "Archived Inspections",
+		"checkouttitle": "Checkout Inspection",
+		"search": "Filter inspection",
+		"checkoutsearch": "Enter job number",
+		"syncMessage": "Please give answer of all mandatory questions then try again to sync the data",
+		"archiveError": "Inspection uploaded successfully. However archiving suffered a non-critical error. Your system administrated has been notified. You should see all question/answers for your inspections on the web, however, inspection has not been deleted from the tablet automatically. You can can delete inspection manually by left sliding the row in inspection list once answers are verified on the web"
+	},
+	"Setting": {
+		"title": "Settings",
+		"message": "Please select your preference of questions",
+		"inProgressInsMessage": "Your inprogress state inspection will start from begining as per the order but your answer will remain as it is."
+	},
+	"JobOrder": {
+		"title": "Job Number Program",
+		"jobId": "Job ID",
+		"jobIdEmpty": "Please add job id",
+		"typeEmpty": "Please select an inspection type",
+		"nextButton": "NEXT",
+		"saveJobOrder": "SAVE",
+		"jobNumChange": "Job number successfully changed.",
+		"alreadyExistJobNumber": "Please enter another job number as inspection already exists on the tablet. If you intend to continue this job number please start it through list of inspections and pick up from where you left off",
+		"jobIdLimit": "Job id exceeded int limit value"
+	},
+	"InspectionType": {
+		"message": "Please select an inspection type to move further",
+		"imageTitle": "Select Image source",
+		"library": "Load from Library",
+		"camera": "Use Camera",
+		"titleRental": "Rental Inspection",
+		"titleWater": "Water Inspection",
+		"owner": "Owner",
+		"location": "Property Location",
+		"address_Location": "Address/Location",
+		"address": "Address",
+		"phone": "Phone number",
+		"cell": "Cell number",
+		"emergencyDate": "Emergency Date",
+		"emergencyDateEmpty": "Please select emergency date",
+		"uploadButton": "Upload Property Photo",
+		"inspectorPhone": "Inspector phone number",
+		"ownerEmpty": "Please add owner",
+		"locationEmpty": "Please add location",
+		"addressEmpty": "Please add address",
+		"phoneEmpty": "Please add phone number",
+		"cellEmpty": "Please add cell number",
+		"dropdownTitle": "---Select Question Group---",
+		"inspectorPhoneEmpty": "Please add inspector phone number",
+		"fetchJobAddress":"Job address fetched successfully"
+	},
+	"InspectionAdd": {
+		"title": "Inspection Add",
+		"placeholderText": "Add some inputs",
+		"commentText": "Add some comments here",
+		"dropdownTitle": "---Select---",
+		"uploadButton": "Upload Photo",
+		"imageTitle": "Select Image source",
+		"library": "Load from Library",
+		"camera": "Use Camera",
+		"previousButton": "PREVIOUS",
+		"submitButton": "SUBMIT",
+		"errorMessage": "Please give your answer",
+		"imageUploadMessage": "Image upload successfully",
+		"syncDone": "Sync done",
+		"comment": "Comment",
+		"uploadSign": "Upload Signature"
+	},
+	"InspectionDetail": {
+		"title": "Inspection Detail",
+		"yes": "Yes",
+		"no": "No",
+		"noRecord": "No records found",
+		"view": "View"
+	},
+	"Sync": {
+		"header": "Warning!",
+		"message": "You will lose the data of the inspection if someone has changed a question of that particular inspection type.",
+		"ok": "OK"
+	},
+	"Logout": {
+		"header": "Confirm!",
+		"message": "Are you sure you want to logout?",
+		"message1": "By clicking on Logout, all data will be lost which are not synced. Are you sure?",
+		"cancel": "Cancel",
+		"synclogout": "Sync and logout",
+		"logout": "Logout"
+	},
+	"Errors": {
+		"401": "Your session was expired",
+		"500": "Something went wrong. Try again later",
+		"502": "Something went wrong. Try again later"
+	},
+	"Sample": {
+		"title": "Sample List",
+		"addtitle": "Sample Add",
+		"editTitle": "Sample Edit",
+		"search": "Filter sample"
+	},
+	"10": "Draft",
+	"11": "In progress",
+	"12": "Completed",
+	"13": "Uploaded",
+	"1": "Yes",
+	"2": "No",
+	"3": "N/A",
+	"Survey": {
+		"title": "Survey Room List",
+		"addtitle": "Add Survey Room",
+		"edittitle": "Edit Survey Room"
+	},
+	"Material": {
+		"uploadButton": "Upload Material Photo"
+	},
+	"Checkout": {
+		"confirmArchiveCheck": "An archived copy of the inspection job exists on your tablet. Checking out fresh copy from the server will erase archived copy. Do you want to continue?",
+		"archiveNoMessage": "Inspection was not checked out! You can continue to view past answers through Archived Inspection tile on the dashboard.",
+		"confirmCheck": "An copy of the inspection job exists on your tablet. Checking out fresh copy from the server will erase that copy. Do you want to continue?",
+		"noMessage": "Inspection was not checked out! You can continue to view past answers through Inspection tab."
+	},
+	"AppVersion": {
+		"nonMandatoryMessage": "You have all mandatory updates installed. You may check the App Store for any other updates.",
+		"latestVersionMessage": "Great! You have the latest version on your device.",
+		"outdatedVersionMessage": "Your version is outdated. Please update the App. Remember to check-in any inspections you may have on your device prior to updating the App."
+	},
+	"JobList":{
+		"jobListTitle": "Job List",
+		"search": "Filter job",
+		"noRecord": "No records found",
+		"addTitle" : "Job Add",
+		"editTitle": "Job Edit",
+		"addClient":" Add Client"
+	},
+	"ShipmentTracking":{
+		"title":"Shipment Tracking"
+	}
+}

@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">{{'Setting.title' | translate}}</ion-text>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="auth-page">
+  <ion-list-header>{{'Setting.message' | translate}}</ion-list-header>
+  <ion-list>
+    <ion-radio-group>
+      <ion-item *ngFor="let obj of arrOrder" (ionSelect)="radioSelect(obj.value)">
+        <ion-label color="medium" class="text-1x">{{obj.name}}</ion-label>
+        <!-- <ion-radio disabled="{{boolIsInsProgress}}" mode="md" slot="start" checked="{{obj.checked}}" value="{{obj.value}}"></ion-radio> -->
+        <ion-radio mode="md" slot="start" checked="{{obj.checked}}" value="{{obj.value}}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,106 @@
+<ion-content class="animated fadeIn login auth-page">
+  <div class="auth-content">
+    <div padding-horizontal text-center class="animated fadeInDown">
+      <div class="logo"></div>
+    </div>
+
+    <form [formGroup]="myForm" class="list-form">
+      <ion-item no-padding class="animated fadeInUp delay-1s">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label position="floating">
+                <ion-img src="/assets/img/user.png"></ion-img>
+                {{'Login.username' | translate}}
+              </ion-label>
+              <ion-input color="tertiary" type="text" formControlName="Email"></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <p ion-text color="danger" class="text08"
+        *ngIf="myForm.controls['Email'].hasError('required') && myForm.controls['Email'].touched">
+        <ion-text color="danger">
+          {{'Login.usernameEmpty' | translate}}
+        </ion-text>
+      </p>
+
+      <ion-item  class="animated fadeInUp delay-1s no-padding">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="10">
+              <ion-label position="floating">
+                <ion-img src="/assets/img/password.png"></ion-img>
+                {{'Login.password' | translate}}
+              </ion-label>
+              <ion-input color="tertiary" [type]="show ? 'text' : 'Password'" formControlName="Password"></ion-input>
+            </ion-col>
+            <ion-col size="2">
+              <ion-button fill="clear" color="medium" (click)="showPassword()">
+                <ion-icon [name]="show ? 'eye-off' : 'eye'"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <p ion-text color="danger" class="text08"
+        *ngIf="myForm.controls['Password'].hasError('required') && myForm.controls['Password'].touched">
+        <ion-text color="danger">
+          {{'Login.passwordEmpty' | translate}}
+        </ion-text>
+      </p>
+      <p ion-text color="danger" class="text08"
+        *ngIf="myForm.controls['Password'].hasError('minlength') && myForm.controls['Password'].touched">
+        <ion-text color="danger">
+          {{'Login.passwordError' | translate}}
+        </ion-text>
+      </p>
+
+      <div class="storedCompanyCodeDiv" *ngIf="!!companyCode">
+        Company Code : <span>{{companyCode}}</span>
+        <ion-button fill="clear" color="medium" (click)="clearCompanyCode()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div *ngIf="!companyCode">
+        <ion-item no-padding class="animated fadeInUp delay-1s">
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label position="floating">
+                  <ion-img src="/assets/img/company.jpg"></ion-img>
+                  {{'Login.companycode' | translate}}
+                </ion-label>
+                <ion-input color="tertiary" type="text" formControlName="CompanyCode"></ion-input>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+        <p ion-text color="danger" class="text08"
+          *ngIf="myForm.controls['CompanyCode'].hasError('required') && myForm.controls['CompanyCode'].touched">
+          <ion-text color="danger">
+            {{'Login.companycodeEmpty' | translate}}
+          </ion-text>
+        </p>
+      </div>
+    </form>
+
+    <p class="paz animated fadeInUp delay-1s">
+    </p>
+
+    <div class="animated fadeInUp delay-1s">
+      <ion-button size="medium" expand="full" color="primary" (click)="login()" tappable>
+        {{'Login.loginButton' | translate}}
+      </ion-button>
+    </div>
+
+    <div id="version" class="animated fadeInUp delay-1s">
+      <p ion-text class="text08">
+        <ion-text>
+          App Version - {{appVersionInfo}}
+        </ion-text>
+      </p>
+    </div>
+  </div>
+</ion-content>

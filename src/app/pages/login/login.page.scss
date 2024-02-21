@@ -1,0 +1,39 @@
+
+  ion-content {
+    --background: var(--ion-color-secondary);
+  }
+
+  ion-grid {
+    width: 100%;
+  }
+
+  #version {
+    text-align: center;
+    color: var(--ion-color-version);
+  }
+
+
+.list-form {
+  ion-button {
+    margin-top: 10px;
+  }
+}
+
+.paz {
+  position: relative;
+  z-index: 10;
+}
+
+.storedCompanyCodeDiv {
+  padding: 15px 0px;
+
+  span {
+    font-weight: bold;
+    color: #353f7b;
+  }
+
+  ion-button {
+    float: right;
+    margin: -15px 17px 0 0;
+  }
+}

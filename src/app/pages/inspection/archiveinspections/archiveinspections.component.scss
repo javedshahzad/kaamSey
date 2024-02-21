@@ -1,0 +1,54 @@
+:host {
+    ion-searchbar {
+      --background: var(--ion-color-secondary);
+      --color: var(--ion-color-dark);
+      --icon-color: var(--ion-color-dark);
+      --placeholder-color: var(--ion-color-dark);
+      padding-bottom: 0;
+      padding-left: 0;
+      margin-bottom: 20px;
+    }
+    
+    ion-item {
+      border-radius: 0;
+      border-bottom: 1px solid var(--ion-color-light);
+  
+      ion-button {
+        font-size: 13px !important;
+        ion-icon {
+          position: absolute;
+          right: 0;
+        }
+      }
+    }
+  
+    ion-card {
+      &.no-radius {
+        border-radius: 0;
+        box-shadow: none;
+        border-top: 1px solid var(--ion-color-light);
+      }
+      border-left: 3px solid var(--ion-color-dark);
+    }
+  
+    ion-datetime {
+      padding: 2px 0;
+      font-size: 14px;
+    }
+  
+    div {
+      font-size: 14px;
+      text-align: center;
+    }
+  
+    p {
+      font-size: 14px;
+    }
+  }
+  
+  :host-context(.ios) {
+    ion-searchbar {
+      border-bottom: 1px solid var(--ion-color-medium);
+    }
+  }
+  

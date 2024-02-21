@@ -1,0 +1,326 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-buttons slot="start">
+      <ion-button *ngIf="!globalService.isFromAddNew" color="dark" size="small" shape="round" (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">{{'InspectionAdd.title' | translate}}</ion-text>
+      </ion-text>
+    </ion-title>
+    <ion-button  slot="end"  fill="clear" size="large" color="medium" (click)="showInspActions($event)">
+      <ion-icon name="ellipsis-vertical"></ion-icon>
+    </ion-button>
+
+     <!-- <ion-buttons*ngIf="!!obj">
+      <ion-button color="dark" size="small" shape="round" (click)="openInsQueCamera()" tappable>
+        <ion-icon name="camera"></ion-icon>
+      </ion-button> -->
+
+     <!-- <ion-button color="dark" size="small" shape="round" (click)="showInsQueImages()">
+        <ion-icon name="image"></ion-icon>
+      </ion-button> -->
+   
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-slides #slides>
+    <ion-slide class="question" *ngIf="!!obj">
+      <div padding>
+        <ion-text color="medium" no-margin *ngIf="!!obj.QuestionGroupName">
+          {{obj.QuestionGroupName}}
+        </ion-text>
+      </div>
+
+      <div padding>
+        <ion-text color="medium" no-margin>
+          Q. {{obj.Question}}
+        </ion-text>
+      </div>
+
+      <form [formGroup]="myForm" *ngIf="obj.QuestionTypeId == objQueType.TextBox" [ngSwitch]="obj.SubQuestionTypeId">
+        <ion-item lines="none">
+          <ion-input *ngSwitchCase="objSubQueType.Simple" placeholder="{{'InspectionAdd.placeholderText' | translate}}"
+            class="text-1x" type="text" formControlName="txtValue"></ion-input>
+
+          <ion-textarea *ngSwitchCase="objSubQueType.Multiline"
+            placeholder="{{'InspectionAdd.placeholderText' | translate}}" class="text-1x" formControlName="txtValue">
+          </ion-textarea>
+
+          <ion-datetime class="w100" *ngSwitchCase="objSubQueType.DateTime"
+            placeholder="{{'InspectionAdd.placeholderText' | translate}}" display-format="MMM DD, YYYY"
+            picker-format="MMM DD, YYYY" formControlName="txtValue">
+          </ion-datetime>
+
+          <ion-input *ngSwitchCase="objSubQueType.Numeric" placeholder="{{'InspectionAdd.placeholderText' | translate}}"
+            class="text-1x" type="tel" formControlName="txtValue"></ion-input>
+        </ion-item>
+
+        <div *ngIf="obj.ShowComment == 'true'">
+          <ion-item lines="none">
+            <ion-text color="medium" no-margin>
+              {{'InspectionAdd.comment' | translate}}
+            </ion-text>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+              formControlName="commentValue"></ion-input>
+          </ion-item>
+        </div>
+      </form>
+
+      <ion-list *ngIf="obj.QuestionTypeId == objQueType.Radio" [ngSwitch]="obj.SubQuestionTypeId">
+        <div *ngSwitchCase="objSubQueType.YesNo">
+          <ion-radio-group (ionChange)="radioSelect($event)" [(ngModel)]="radioValueInput">
+            <ion-item *ngFor="let objRadio of arrRadio">
+              <ion-label color="medium" class="text-1x">{{objRadio.name | translate}}</ion-label>
+              <ion-radio mode="md" slot="start"  value="{{objRadio.value}}"
+                ></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+
+          <form [formGroup]="myForm" *ngIf="obj.ShowComment == 'true'">
+            <ion-item lines="none">
+              <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+                formControlName="commentValue"></ion-input>
+            </ion-item>
+          </form>
+        </div>
+
+        <div *ngSwitchCase="objSubQueType.YesNoNA">
+          <ion-radio-group (ionChange)="radioSelect($event)" [(ngModel)]="radioValueInput">
+            <ion-item *ngFor="let objRadio of arrRadioNA">
+              <ion-label color="medium" class="text-1x">{{objRadio.name | translate}}</ion-label>
+              <ion-radio mode="md" slot="start"  value="{{objRadio.value}}"
+                ></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+
+          <form [formGroup]="myForm" *ngIf="obj.ShowComment == 'true'">
+            <ion-item lines="none">
+              <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+                formControlName="commentValue"></ion-input>
+            </ion-item>
+          </form>
+
+        </div>
+
+        <div *ngSwitchCase="objSubQueType.YesNoWithComment">
+          <ion-radio-group (ionChange)="radioSelect($event)" [(ngModel)]="radioValueInput">
+            <ion-item *ngFor="let objRadio of arrRadio">
+              <ion-label color="medium" class="text-1x">{{objRadio.name | translate}}</ion-label>
+              <ion-radio mode="md" slot="start"  value="{{objRadio.value}}"
+               ></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+
+          <form [formGroup]="myForm">
+            <ion-item lines="none" *ngIf="obj.AnswerSelected">
+              <ion-input placeholder="{{'InspectionAdd.placeholderText' | translate}}" formControlName="txtValue"
+                class="text-1x" type="text">
+              </ion-input>
+            </ion-item>
+          </form>
+        </div>
+
+        <div *ngSwitchCase="objSubQueType.YesNoNAWithComment">
+          <ion-radio-group (ionChange)="radioSelect($event)" [(ngModel)]="radioValueInput">
+            <ion-item *ngFor="let objRadio of arrRadioNA">
+              <ion-label color="medium" class="text-1x">{{objRadio.name | translate}}</ion-label>
+              <ion-radio mode="md" slot="start"  value="{{objRadio.value}}"
+                ></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+
+          <form [formGroup]="myForm">
+            <ion-item lines="none" *ngIf="obj.AnswerSelected">
+              <ion-input placeholder="{{'InspectionAdd.placeholderText' | translate}}" formControlName="txtValue"
+                class="text-1x" type="text">
+              </ion-input>
+            </ion-item>
+          </form>
+        </div>
+
+        <div *ngSwitchCase="objSubQueType.Dynamic">
+          <ion-radio-group (ionChange)="radioDynamicSelect($event)" [(ngModel)]="DynamicVal">
+            <ion-item *ngFor="let objOption of arrOption">
+              <ion-label color="medium" class="text-1x">{{objOption.Option}}</ion-label>
+              <ion-radio mode="md" slot="start" value="{{objOption.Id}}"
+                >
+              </ion-radio>
+            </ion-item>
+          </ion-radio-group>
+
+          <form [formGroup]="myForm" *ngIf="obj.ShowComment == 'true'">
+            <ion-item lines="none">
+              <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+                formControlName="commentValue"></ion-input>
+            </ion-item>
+          </form>
+        </div>
+      </ion-list>
+
+      <div *ngIf="obj.QuestionTypeId == objQueType.DropDown">
+        <ion-item lines="none">
+          <ion-label color="medium" class="text-1x">{{'InspectionAdd.dropdownTitle' | translate}}</ion-label>
+          <ion-select interface="popover" (ionChange)="dropDownSelect($event)" [(ngModel)]="selectedValue">
+            <ion-select-option *ngFor="let objOption of arrOption" value="{{objOption.Option}}">
+              {{objOption.Option}}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <form [formGroup]="myForm" *ngIf="obj.ShowComment == 'true'">
+          <ion-item lines="none">
+            <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+              formControlName="commentValue"></ion-input>
+          </ion-item>
+        </form>
+      </div>
+
+      <div *ngIf="obj.QuestionTypeId == objQueType.CheckBox">
+        <ion-list>
+          <ion-item *ngFor="let objOption of arrOption">
+            <ion-label color="medium" class="text-1x">{{objOption.Option}}</ion-label>
+            <ion-checkbox mode="md" slot="end" [(ngModel)]="objOption.IsChecked" (click)="checkBoxSelect(objOption.Id)">
+            </ion-checkbox>
+          </ion-item>
+        </ion-list>
+
+        <form [formGroup]="myForm" *ngIf="obj.ShowComment == 'true'">
+          <ion-item lines="none">
+            <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+              formControlName="commentValue"></ion-input>
+          </ion-item>
+        </form>
+      </div>
+
+      <div *ngIf="obj.QuestionTypeId == objQueType.FileUpload">
+        <ion-button size="medium" expand="full" color="primary" (click)="selectImage()" tappable>
+          {{'InspectionAdd.uploadButton' | translate}}
+        </ion-button>
+
+        <ion-list>
+          <ion-item *ngFor="let objImg of arrImage; index as pos" text-wrap>
+            <ion-thumbnail slot="start">
+              <ion-img [src]="objImg.Path"></ion-img>
+            </ion-thumbnail>
+
+            <ion-label>
+              {{objImg.Name}}
+            </ion-label>
+
+            <ion-button slot="end" fill="clear" (click)="editName(objImg,pos)">
+              <ion-icon slot="icon-only" src="assets/img/photo.svg"></ion-icon>
+            </ion-button>
+            <ion-button slot="end" fill="clear" (click)="deleteImage(objImg, pos)" style="margin-left: 0px;">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+
+        <form [formGroup]="myForm" *ngIf="obj.ShowComment == 'true'">
+          <ion-item lines="none">
+            <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+              formControlName="commentValue"></ion-input>
+          </ion-item>
+        </form>
+
+      </div>
+      <!-- Signature Div -->
+      <div *ngIf="obj.QuestionTypeId == objQueType.Signature">
+        <ion-button size="medium" expand="full" color="primary" (click)="sign()" tappable>
+          {{'InspectionAdd.uploadSign' | translate}}
+        </ion-button>
+
+        <ion-list>
+          <ion-item *ngFor="let objImg of arrImage; index as pos" text-wrap>
+            <ion-thumbnail slot="start">
+              <ion-img [src]="objImg.Path"></ion-img>
+            </ion-thumbnail>
+            <ion-button slot="end" fill="clear" (click)="deleteImage(objImg, pos)">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+
+        <form [formGroup]="myForm" *ngIf="obj.ShowComment == 'true'">
+          <ion-item lines="none">
+            <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+              formControlName="commentValue"></ion-input>
+          </ion-item>
+        </form>
+      </div>
+      <!-- End signature -->
+      <div style="overflow-x:auto;" *ngIf="obj.QuestionTypeId == objQueType.Table">
+        <table id="t01">
+          <thead>
+            <tr>
+              <th *ngFor="let objQuestionTable of arrQuestionTable">
+                {{objQuestionTable.ColumnName}}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of arrNoOfRows; let i = index;">
+              <td *ngFor="let objQuestionTable of arrQuestionTable; let j = index;" [style.max-width.px]="tblWidth"
+                [style.width.px]="tblWidth">
+                <!-- <ion-input type="text" [(ngModel)]="arrTable[(arrQuestionTable.length * i) + j]"></ion-input> -->
+                <textarea type="text" [rows]="1" [(ngModel)]="arrTable[(arrQuestionTable.length * i) + j]"
+                  (ngModelChange)="autogrow((arrQuestionTable.length * i) + j)" #myDiv></textarea>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <form [formGroup]="myForm" *ngIf="obj.ShowComment == 'true'">
+          <ion-item lines="none">
+            <ion-input placeholder="{{'InspectionAdd.commentText' | translate}}" class="text-1x" type="text"
+              formControlName="commentValue"></ion-input>
+          </ion-item>
+        </form>
+
+      </div>
+    </ion-slide>
+    <div padding *ngIf="!obj">
+      <ion-text color="medium" no-margin>
+        {{'InspectionDetail.noRecord' | translate}}
+      </ion-text>
+    </div>
+  </ion-slides>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid class="btn-group">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button [disabled]="disablePrevButton" size="medium" expand="full" color="primary" (click)="previous()"
+            tappable>
+            <!-- [disabled]="intQuestionNumber == 0" -->
+            {{'InspectionAdd.previousButton' | translate}}
+          </ion-button>
+        </ion-col>
+
+        <ion-col size="6">
+          <div *ngIf="isLastQuestion || !obj else nextButton">
+            <ion-button icon-right size="medium" expand="full" color="primary" (click)="submit()" tappable>
+              {{'InspectionAdd.submitButton' | translate}}
+            </ion-button>
+          </div>
+          <ng-template #nextButton>
+            <ion-button [disabled]="disableButton" icon-right size="medium" expand="full" color="primary"
+              (click)="next()" tappable>
+              {{'JobOrder.nextButton' | translate}}
+            </ion-button>
+          </ng-template>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

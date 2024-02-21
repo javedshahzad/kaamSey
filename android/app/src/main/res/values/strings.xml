@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">KaamSey</string>
+    <string name="title_activity_main">KaamSey</string>
+    <string name="package_name">com.kaamsey.inspection</string>
+    <string name="custom_url_scheme">com.kaamsey.inspection</string>
+</resources>

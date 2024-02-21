@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar mode="ios" color="primary">
+    <ion-title class="fw500">
+      <ion-text color="dark">
+        <ion-text color="dark">{{'Inspection.archiveTitle' | translate}}</ion-text>
+      </ion-text>
+    </ion-title>
+
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-searchbar placeholder="{{'Inspection.search' | translate}}" (ionInput)="onInput($event)">
+  </ion-searchbar>
+
+  <div *ngIf="arrInspection.length != 0 && isLoading == false">
+    <ion-card no-margin *ngFor="let objInspection of arrInspection; let i = index;" class="no-radius">
+      <ion-item-sliding #slidingItem>
+        <ion-item lines="none">
+          <ion-label>
+            <h3 no-margin class="fw700 no-margin">
+              <ion-text color="primary">Job Number - {{objInspection.JobId}}</ion-text>
+            </h3>
+
+            <h3 no-margin class="no-margin">
+              <!-- <ion-datetime readonly display-format="MMM DD, YYYY" value="{{objInspection.InspectionDate}}">
+              </ion-datetime> -->
+              {{objInspection.InspectionDate | date:'fullDate'}}
+            </h3>
+
+            <p class="no-margin" [ngClass]="{'draft': objInspection.Status == objStatusType.Draft,
+                                        'inprogress': objInspection.Status == objStatusType.InProgress || objInspection.Status == 0,
+                                        'uploaded': objInspection.Status == objStatusType.Uploaded,
+                                        'complete': objInspection.Status == objStatusType.Complete}">
+              <ion-text>{{(objInspection.Status == 0 ? objStatusType.InProgress.toString()  : objInspection.Status.toString()) | translate}}</ion-text>
+            </p>
+          </ion-label>
+
+         
+
+          <ion-button fill="clear" size="large" color="medium" (click)="detail(objInspection)">
+            <ion-icon name="eye"></ion-icon>
+          </ion-button>
+
+          <ion-button *ngIf="sample_collection_visible" fill="clear" size="large" color="medium" (click)="samplelist(objInspection)">
+            <ion-icon src="assets/img/collect.svg"></ion-icon>
+          </ion-button>
+
+          
+
+         
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="removeItem(objInspection)">
+            <ion-icon name="trash"></ion-icon>
+            <ion-text>Delete</ion-text>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+
+    </ion-card>
+  </div>
+
+  <div *ngIf="arrInspection.length == 0 && isLoading == true">
+    <ion-card *ngFor="let obj of [1,2,3,4,5,6,7,8,9,10];">
+      <ion-item lines="none">
+        <ion-label>
+          <h2 no-margin class="fw700 no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </h2>
+
+          <h3 no-margin class="no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </h3>
+
+          <p class="no-margin">
+            <ion-skeleton-text animated style="width: 80%;"></ion-skeleton-text>
+          </p>
+        </ion-label>
+
+        <p>
+          <ion-skeleton-text animated style="width: 25px; height: 25px;"></ion-skeleton-text>
+        </p>
+
+        <ion-button fill="clear" size="large" color="medium">
+          <ion-skeleton-text animated style="width: 25px; height: 25px;"></ion-skeleton-text>
+        </ion-button>
+      </ion-item>
+    </ion-card>
+  </div>
+
+  <div *ngIf="arrInspection.length == 0 && isLoading == false">
+    <ion-text color="tertiary">{{'InspectionDetail.noRecord' | translate}}</ion-text>
+  </div>
+</ion-content>
