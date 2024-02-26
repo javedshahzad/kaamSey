@@ -6,7 +6,6 @@ import { LoaderService } from 'src/app/core/loader.service';
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
 import { File } from '@ionic-native/File/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { QuestionTypeEnums, SubQuestionTypeEnums } from 'src/app/models/db-models/question-type-model';
@@ -87,7 +86,7 @@ export class AddComponent {
   DynamicVal: any=0;
   constructor(private camera: Camera, private webview: WebView, private actionSheetController: ActionSheetController,
     private toastService: ToastService, private platform: Platform, private loaderService: LoaderService,
-    private ref: ChangeDetectorRef, private filePath: FilePath, private crop: Crop,
+    private ref: ChangeDetectorRef, private crop: Crop,
     private translateService: TranslateService, private databaseService: DatabaseService,
     public globalService: GlobalService, private guidService: GuidService,
     private timestampService: TimestampService, private route: ActivatedRoute, private file: File,

@@ -12,7 +12,6 @@ import { AddComponent } from "./joborder/inspection-type/add/add.component";
 import { Camera } from "@ionic-native/Camera/ngx";
 import { File } from "@ionic-native/File/ngx";
 import { WebView } from "@ionic-native/ionic-webview/ngx";
-import { FilePath } from "@ionic-native/file-path/ngx";
 import { Crop } from "@ionic-native/crop/ngx";
 import { ExpandableComponent } from "./inspection-detail/expandable/expandable.component";
 // import { PdfDownloadService } from '../dashboard/pdf-download.service';
@@ -85,7 +84,6 @@ import { ShipmentTrackingComponent } from './shipment-tracking/shipment-tracking
     FileTransfer,
     FileTransferObject,
     WebView,
-    FilePath,
     Crop,
     DatePipe,
     ImageResizer,

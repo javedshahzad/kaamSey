@@ -6,7 +6,6 @@ import { DatabaseService } from 'src/app/core/database.service';
 import { TimestampService } from 'src/app/core/timestamp.service';
 import { StatusTypes } from 'src/app/models/db-models/inspection-model';
 import { GuidService } from 'src/app/core/guid.service';
-import { FilePath } from '@ionic-native/file-path/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { File,FileEntry } from '@ionic-native/File/ngx';
 import { ActionSheetController, AlertController, Platform, PopoverController } from '@ionic/angular';
@@ -45,7 +44,7 @@ export class InspectionTypeComponent implements OnInit {
   constructor(private router: Router, private formBuilder: FormBuilder, public globalService: GlobalService,
     private zone:NgZone,
     private databaseService: DatabaseService, private timestampService: TimestampService,
-    private guidService: GuidService, private filePath: FilePath, private crop: Crop, private file: File,
+    private guidService: GuidService, private crop: Crop, private file: File,
     private actionSheetController: ActionSheetController, private translateService: TranslateService,
     private camera: Camera, private platform: Platform, private webview: WebView, private toastService: ToastService,
     private ref: ChangeDetectorRef, private location: Location, private route: ActivatedRoute,

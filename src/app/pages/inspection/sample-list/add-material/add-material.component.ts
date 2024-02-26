@@ -8,7 +8,6 @@ import { ActionSheetController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
 import { File } from '@ionic-native/File/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { MaterialImage } from '../../../../models/db-models/material-image';
@@ -117,7 +116,6 @@ export class AddMaterialComponent implements OnInit {
     private camera: Camera,
     private crop: Crop,
     private platform: Platform,
-    private filePath: FilePath,
     private file: File,
     private ref: ChangeDetectorRef,
     private webview: WebView,
