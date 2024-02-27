@@ -36,17 +36,12 @@ export class AppComponent {
     // this.apiUrl = !!localStorage.getItem("apiUrl") ? localStorage.getItem("apiUrl") : environment.endPoint;
   }
 
-  initializeApp() {
+  async initializeApp() {
     this.platform.ready().then(async () => {
       this.storage.create();
-     
-      let backgroundColor:BackgroundColorOptions ={
-        color:'#030204'
-      }
-      await StatusBar.setBackgroundColor(backgroundColor);
-      await StatusBar.setStyle({ style: Style.Dark });
-      setTimeout( async () => {
-       await  SplashScreen.hide();
+      await StatusBar.setStyle({ style: Style.Light });
+      setTimeout(async () => {
+        await SplashScreen.hide()
       }, 2000);
       this.languageService.setInitialAppLanguage();
       this.appVersion.getVersionCode().then(res => {

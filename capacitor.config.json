@@ -6,12 +6,10 @@
 	"plugins": {
 	  "SplashScreen": {
 		"showSpinner": false,
-		"launchShowDuration":5000,
+		"launchShowDuration":7000,
 		"launchAutoHide": true,
 		"spinnerColor": "#f53d3d",
-		"splashFullScreen": true,
-		"splashImmersive": true,
-		"backgroundColor": "#022b4f"
+		"splashFullScreen": true
 	  }
 	},
 	"cordova": {
