@@ -411,10 +411,10 @@ export class AddMaterialComponent implements OnInit {
         .then(
           (data) => {
             this.subMaterialList = [];
-            this.slideOneForm.controls.material_sub.setValue("");
-            this.slideOneForm.controls.classification.setValue("");
-            this.slideOneForm.controls.friable.setValue("");
-            this.slideOneForm.controls.units.setValue("");
+            // this.slideOneForm.controls.material_sub.setValue("");
+            // this.slideOneForm.controls.classification.setValue("");
+            // this.slideOneForm.controls.friable.setValue("");
+            // this.slideOneForm.controls.units.setValue("");
             if (data.rows.length > 0) {
 
               for (var i = 0; i < data.rows.length; i++) {
@@ -494,6 +494,7 @@ export class AddMaterialComponent implements OnInit {
     component: IonicSelectableComponent,
     value: any
   }) {
+    console.log(event.value,"On select mat sub")
     if (this.slideOneForm.value.material && this.slideOneForm.value.material_sub) {
       let query = `select * from AsbMaterialMappingList where Trim(Material) = trim('${this.slideOneForm.value.material}') and Trim(Material_Sub) = trim('${this.slideOneForm.value.material_sub}')`;
       this.databaseService.db
