@@ -115,7 +115,7 @@ export class AddMaterialComponent implements OnInit {
     private translateService: TranslateService,
     private camera: Camera,
     private crop: Crop,
-    private platform: Platform,
+    public platform: Platform,
     private file: File,
     private ref: ChangeDetectorRef,
     private webview: WebView,
@@ -124,6 +124,14 @@ export class AddMaterialComponent implements OnInit {
     private imageResizer: ImageResizer,
     private loaderService: LoaderService
   ) {
+    this.route.queryParams.subscribe((params) => {
+      console.log(params)
+      if (params.inspectionObj) {
+        this.inspectionObj = JSON.parse(params.inspectionObj);
+        console.log(this.inspectionObj)
+        this.selectedMaterial = this.inspectionObj.Client_Material_Id;
+      }
+    });
     this.type = this.route.snapshot.params.status;
     this.jobId = this.route.snapshot.params.jobid;
 
@@ -131,15 +139,12 @@ export class AddMaterialComponent implements OnInit {
   }
 
 
+  ngOnInit(){
 
-  async ngOnInit() {
+  }
+  async ionViewWillEnter() {
     console.log(this.type);
-    this.route.queryParams.subscribe((params) => {
-      if (params && params.inspectionObj) {
-        this.inspectionObj = JSON.parse(params.inspectionObj);
-        this.selectedMaterial = this.inspectionObj.Client_Material_Id;
-      }
-    });
+
 
     let holdValues = localStorage.getItem('HOLD_ADD_MATERIAL');
     if (holdValues) {
@@ -161,6 +166,7 @@ export class AddMaterialComponent implements OnInit {
     if (this.type == "edit") {
       this.getEditSubMaterial(this.slideOneForm.value.material);
       this.arrImage = await this.loadStoredImages();
+      console.log(this.arrImage)
       if (this.arrImage.length > 0) {
         this.createImgDisplayName();
       }

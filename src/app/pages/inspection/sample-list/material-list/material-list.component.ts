@@ -1,7 +1,9 @@
 import { Location } from "@angular/common";
 import { Component, OnInit, ChangeDetectorRef, ViewChild, NgZone } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
-import { AlertController, IonItemSliding } from "@ionic/angular";
+import { WebView } from "@ionic-native/ionic-webview/ngx";
+import { AlertController, IonItemSliding, Platform } from "@ionic/angular";
 import { DatabaseService } from "src/app/core/database.service";
 import { TimestampService } from "src/app/core/timestamp.service";
 import { ToastService } from "src/app/core/toast.service";
@@ -41,14 +43,19 @@ export class MaterialListComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private timestamp: TimestampService,
     private alertController: AlertController,
-    private zone: NgZone
+    private zone: NgZone,
+    private webview: WebView,
+    private _sanitizer: DomSanitizer,
+    public platform: Platform,
   ) { 
     this.sample_collection_visible = !!localStorage.getItem('sample_collection_visible') && localStorage.getItem('sample_collection_visible') == 'true' ? true : false;
     this.room_collection_visible = !!localStorage.getItem('room_collection_visible') && localStorage.getItem('room_collection_visible') == 'true' ? true : false;
     this.material_collection_visible = !!localStorage.getItem('material_collection_visible') && localStorage.getItem('material_collection_visible') == 'true' ? true : false;
 
   }
-
+  sanitizedURL(url) {
+    return this._sanitizer.bypassSecurityTrustUrl(url);
+}
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       if (params && params.inspectionObj) {
@@ -80,10 +87,10 @@ export class MaterialListComponent implements OnInit {
   getmaterial() {
     var query: any;
     if (this.selectedRoom == null) {
-      query = `select (select Path from MaterialImage where Job_id = ${this.jobId} and  Client_Material_Id = m.Client_Material_Id and IsDelete = 'false') as ImagePath, (select count(client_material_id) from MaterialRoom where job_id = ${this.jobId} and Client_Material_Id = m.Client_Material_Id and IsDelete='false') as mr,(select count(sample_id) from InspectionSample where job_id = ${this.jobId} and Client_Material_Id = m.Client_Material_Id and IsDelete='false') as sm,* 
+      query = `select (select Path from MaterialImage where Job_id = ${this.jobId} and  Client_Material_Id = m.Client_Material_Id and IsDelete = 'false') as ImagePath,(select Filepath from MaterialImage where Job_id = ${this.jobId} and  Client_Material_Id = m.Client_Material_Id and IsDelete = 'false') as ImgFilepath, (select count(client_material_id) from MaterialRoom where job_id = ${this.jobId} and Client_Material_Id = m.Client_Material_Id and IsDelete='false') as mr,(select count(sample_id) from InspectionSample where job_id = ${this.jobId} and Client_Material_Id = m.Client_Material_Id and IsDelete='false') as sm,* 
       from MaterialListModels m where job_id = ${this.jobId} and IsDelete='false' ORDER BY CAST(Client_Material_Id AS INTEGER)`;
     } else {
-      query = `select (select Path from MaterialImage where Job_id = ${this.jobId} and  Client_Material_Id = m.Client_Material_Id and IsDelete = 'false') as ImagePath,(select count(client_material_id) from MaterialRoom where job_id = ${this.jobId} 
+      query = `select (select Path from MaterialImage where Job_id = ${this.jobId} and  Client_Material_Id = m.Client_Material_Id and IsDelete = 'false') as ImagePath,(select Filepath from MaterialImage where Job_id = ${this.jobId} and  Client_Material_Id = m.Client_Material_Id and IsDelete = 'false') as ImgFilepath, (select count(client_material_id) from MaterialRoom where job_id = ${this.jobId} 
       and Client_Material_Id = m.Client_Material_Id and IsDelete='false') as mr,(select count(sample_id) from InspectionSample
        where job_id = ${this.jobId} 
       and Client_Material_Id = m.Client_Material_Id and IsDelete='false') as sm,* 
@@ -115,6 +122,7 @@ export class MaterialListComponent implements OnInit {
               countValue: res.rows.item(i).sm,
               roomCount: res.rows.item(i).mr,
               ImagePath: res.rows.item(i).ImagePath,
+              Filepath:res.rows.item(i).ImgFilepath
             });
           }
 
@@ -410,7 +418,15 @@ export class MaterialListComponent implements OnInit {
       navigationExtras
     );
   }
-
+  pathForImage(img) {
+    console.log(img)
+    if (img === null) {
+      return '';
+    } else {
+      const converted = this.webview.convertFileSrc(img);
+      return converted;
+    }
+  }
   async removeItem(item) {
     this.slidingItem.closeOpened();
     let isSamp = false; let isMatRoom = false;

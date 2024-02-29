@@ -291,8 +291,15 @@
       <ion-list>
         <ion-item *ngFor="let objImg of arrImage; index as pos" text-wrap>
           <ion-thumbnail slot="start">
-            <ion-img *ngIf="objImg.Path" [src]="objImg.Path"></ion-img>
-            <img *ngIf="!objImg.Path" src="../../../../../assets/img/DefaultImage.png">
+            <ng-container *ngIf="platform.is('ios')">
+              <ion-img *ngIf="objImg.Filepath" src="{{pathForImage(objImg.Filepath)}}"></ion-img>
+              <img *ngIf="!objImg.Filepath" src="../../../../../assets/img/DefaultImage.png">
+            </ng-container>
+
+            <ng-container *ngIf="platform.is('android')">
+              <ion-img *ngIf="objImg.Path" [src]="objImg.Path"></ion-img>
+              <img *ngIf="!objImg.Path" src="../../../../../assets/img/DefaultImage.png">
+            </ng-container>
           </ion-thumbnail>
 
           <ion-label class="display_img_name">
