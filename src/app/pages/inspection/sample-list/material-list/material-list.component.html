@@ -96,11 +96,11 @@
                 <ion-col size="2">
                   <ion-thumbnail>
                     <ng-container *ngIf="platform.is('ios')">
-                      <img src="{{pathForImage(arr.ImagePath)}}" *ngIf="arr.Filepath">
-                      <img src="../../../../../assets/img/DefaultImage.png" *ngIf="!arr.Filepath">
+                      <ion-img [src]="pathForImage(arr.ImagePath)" *ngIf="arr.ImagePath"></ion-img>
+                      <img src="../../../../../assets/img/DefaultImage.png" *ngIf="!arr.ImagePath">
                     </ng-container>
                     <ng-container *ngIf="platform.is('android')">
-                      <img [src]="arr.ImagePath" *ngIf="arr.ImagePath">
+                      <ion-img [src]="arr.ImagePath" *ngIf="arr.ImagePath"></ion-img>
                       <img src="../../../../../assets/img/DefaultImage.png" *ngIf="!arr.ImagePath">
                     </ng-container>
                   

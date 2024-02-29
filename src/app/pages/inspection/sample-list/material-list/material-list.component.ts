@@ -54,7 +54,7 @@ export class MaterialListComponent implements OnInit {
 
   }
   sanitizedURL(url) {
-    return this._sanitizer.bypassSecurityTrustUrl(url);
+    return this._sanitizer.bypassSecurityTrustResourceUrl(url);
 }
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
