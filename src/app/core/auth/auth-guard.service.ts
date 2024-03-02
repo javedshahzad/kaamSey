@@ -27,9 +27,15 @@ export class AuthGuard implements CanActivate {
 
   logout() {
     var temp = localStorage.getItem('companyCode');
+    var userEmailTemp = localStorage.getItem('UserEmail');
+    var isBiometric = localStorage.getItem('IsEnabledBiometric') ? localStorage.getItem('IsEnabledBiometric') : "";
+    var password =  localStorage.getItem("UserPassword")
     localStorage.clear();
     this.storage.clear();
    localStorage.setItem('companyCode', temp);
+   localStorage.setItem('UserEmail',userEmailTemp);
+   localStorage.setItem("IsEnabledBiometric",isBiometric)
+   localStorage.setItem("UserPassword",password)
     window.location.href = '';
     //this.router.navigate(['/login']);
   }

@@ -3,15 +3,6 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/auth/auth-guard.service';
 
 const routes: Routes = [
-  // {
-  //   path: '',
-  //   loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
-  // },
-  // {
-  //   path: '',
-  //   redirectTo: 'tabs',
-  //   pathMatch: 'full'
-  // },
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),

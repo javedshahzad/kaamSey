@@ -1,6 +1,6 @@
 <ion-content class="animated fadeIn login auth-page">
-  <div class="auth-content">
-    <div padding-horizontal text-center class="animated fadeInDown">
+  <div class="auth-content ion-margin-top">
+    <div class="animated fadeInDown ion-text-center ion-padding-top">
       <div class="logo"></div>
     </div>
 
@@ -28,7 +28,7 @@
       <ion-item  class="animated fadeInUp delay-1s no-padding">
         <ion-grid>
           <ion-row>
-            <ion-col size="10">
+            <ion-col size="8">
               <ion-label position="floating">
                 <ion-img src="/assets/img/password.png"></ion-img>
                 {{'Login.password' | translate}}
@@ -39,6 +39,12 @@
               <ion-button fill="clear" color="medium" (click)="showPassword()">
                 <ion-icon [name]="show ? 'eye-off' : 'eye'"></ion-icon>
               </ion-button>
+            </ion-col>
+            <ion-col size="2" class="p-t-20">
+              <div class="ion-text-center" (click)="loginWithBiometric()">
+                <img src="assets/img/face-id.png" alt="" class="img-face-id" *ngIf="platform.is('ios')">
+                <img src="assets/img/fingerprints.png" alt="" class="img-face-id" *ngIf="platform.is('android')">
+              </div>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -90,7 +96,7 @@
     </p>
 
     <div class="animated fadeInUp delay-1s">
-      <ion-button size="medium" expand="full" color="primary" (click)="login()" tappable>
+      <ion-button size="medium" expand="full" color="primary" (click)="checkBiometricIfnotEnabled()" tappable>
         {{'Login.loginButton' | translate}}
       </ion-button>
     </div>

@@ -16,6 +16,9 @@ import { ImageResizer, ImageResizerOptions } from '@ionic-native/image-resizer/n
 import { Network } from '@ionic-native/network/ngx';
 import { TokenInterceptor } from './core/auth/token-interceptor.service';
 import { CoreModule } from './core/core.module';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+
+
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -41,6 +44,7 @@ export function createTranslateLoader(http: HttpClient) {
     FileTransfer,
     WebView,
     File,
+    FingerprintAIO,
     Market,
     AppVersion,
     ImageResizer,

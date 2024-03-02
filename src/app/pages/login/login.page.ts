@@ -11,6 +11,8 @@ import { GlobalService } from 'src/app/core/auth/global.service';
 import { environment } from 'src/environments/environment';
 import { Network } from '@ionic-native/network/ngx';
 import { TranslateService } from '@ngx-translate/core';
+import { BiometricAuthService } from 'src/app/core/biometric-auth.service';
+import { AlertController, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -23,27 +25,42 @@ export class LoginPage {
   appVersionInfo = '';
   show = false;
   companyCode = "";
+  Email = "";
+  IsEnabledBiometric="";
+  UserPassword="";
 
   constructor(private toastService: ToastService, private loaderService: LoaderService, private router: Router,
     private formBuilder: FormBuilder, private loginService: LoginService, private device: Device,
+    private BiometricSr : BiometricAuthService,
+    public platform:Platform,
+    private alertController:AlertController,
     private appVersion: AppVersion, private globalService: GlobalService, private network: Network,private translateService: TranslateService
     ) {
-    this.formInit();
-
+     
+      this.companyCode = localStorage.getItem('companyCode');
+      this.Email = localStorage.getItem('UserEmail');
+      this.formInit();
     this.appVersion.getVersionNumber().then((value) => {
       this.appVersionInfo = value;
     });
     //this.geolocation.getCurrentPosition().then(() => { }).catch(() => { });
-    this.companyCode = localStorage.getItem('companyCode');
   }
 
   ionViewDidLeave() {
     this.myForm.reset();
   }
+  ionViewWillEnter(){
+    if (!!this.Email) {
+      this.myForm.controls.Email.setValue(localStorage.getItem('UserEmail'));
+    }
+    this.BiometricSr.checkBiometric();
+    this.IsEnabledBiometric = localStorage.getItem('IsEnabledBiometric') ? localStorage.getItem('IsEnabledBiometric') : "";
+    this.UserPassword = localStorage.getItem('UserPassword') ? localStorage.getItem('UserPassword') : "";
+  }
 
   formInit() {
     this.myForm = this.formBuilder.group({
-      Email: ['', [Validators.required]],
+      Email: [this.Email, [Validators.required]],
       Password: ['', [Validators.required, Validators.minLength(6)]],
       CompanyCode: !this.companyCode ? ['', [Validators.required]] : [''],
       Subscriber: [],
@@ -54,10 +71,15 @@ export class LoginPage {
   showPassword() {
     this.show = this.show === false ? true : false;
   }
-
-  async login() {
+  async loginWithBiometric() {
     if (!!this.companyCode) {
       this.myForm.controls.CompanyCode.setValue(localStorage.getItem('companyCode'));
+    }
+    if (!!this.Email) {
+      this.myForm.controls.Email.setValue(localStorage.getItem('UserEmail'));
+    }
+    if (!!this.UserPassword && this.IsEnabledBiometric === "true") {
+      this.myForm.controls.Password.setValue(localStorage.getItem('UserPassword'));
     }
 
     if (this.myForm.invalid) {
@@ -68,10 +90,60 @@ export class LoginPage {
       });
       return;
     }
-    await this.loaderService.present();
+    this.BiometricSr.BiometricAuthentication().then(async (result)=>{
+      if(this.IsEnabledBiometric === "" || this.IsEnabledBiometric === "false"){
+        this.AlertBiometricConfiguration("Biometric Configuration!","Do you want to use Biometric Login in future Login's?")
+      }else{
+        this.login();
+      }
+    }).catch((error:any)=>{
+      // this.toastService.presentToast("");
+      console.log(error)
+    })
+  }
+  checkBiometricIfnotEnabled(){
+    if (!!this.companyCode) {
+      this.myForm.controls.CompanyCode.setValue(localStorage.getItem('companyCode'));
+    }
+    if (!!this.Email) {
+      this.myForm.controls.Email.setValue(localStorage.getItem('UserEmail'));
+    }
 
+    if (this.myForm.invalid) {
+      Object.keys(this.myForm.controls).forEach(key => {
+        if (this.myForm.controls[key].invalid) {
+          this.myForm.controls[key].markAsTouched({ onlySelf: true });
+        }
+      });
+      return;
+    }
+    if(this.IsEnabledBiometric === "" || this.IsEnabledBiometric === "false"){
+      this.AlertBiometricConfiguration("Biometric Configuration!","Do you want to use Biometric Login in future Login's?")
+    }else{
+      this.login();
+    }
+
+  }
+  async login() {
+    if (!!this.companyCode) {
+      this.myForm.controls.CompanyCode.setValue(localStorage.getItem('companyCode'));
+    }
+    if (!!this.Email) {
+      this.myForm.controls.Email.setValue(localStorage.getItem('UserEmail'));
+    }
+
+    if (this.myForm.invalid) {
+      Object.keys(this.myForm.controls).forEach(key => {
+        if (this.myForm.controls[key].invalid) {
+          this.myForm.controls[key].markAsTouched({ onlySelf: true });
+        }
+      });
+      return;
+    }
+
+    await this.loaderService.present();
     if (this.network.type != this.network.Connection.NONE){
-    await this.loginService.getApiUrl(this.myForm.value).subscribe(res => {
+    await this.loginService.getApiUrl(this.myForm.value).subscribe((res:any) => {
       console.log(res,"data res======")
       if (res.Success) {
         this.myForm.controls.Subscriber.setValue(res.Data.Subscriber);
@@ -84,10 +156,13 @@ export class LoginPage {
         if (!!res.Data.Subscriber.CompanyCode) {
           localStorage.setItem("companyCode", res.Data.Subscriber.CompanyCode);
         }
-
+        localStorage.setItem("UserEmail",res.Data.Email);
+        localStorage.setItem("UserPassword",res.Data.Password)
         const request = this.loginService.login(this.myForm.value);
-        request.subscribe(
-          res => this.goToTabs(res),
+        request.subscribe(res =>{ 
+          this.loaderService.dismiss();
+            this.goToTabs(res);
+        },
           err => {
             console.log(err,"hereee")
             this.loaderService.dismiss();
@@ -102,22 +177,41 @@ export class LoginPage {
       }
     });
   }else {
+      this.loaderService.dismiss();
     this.toastService.presentToast(this.translateService.instant('General.noInternet'));
   }
-  this.loaderService.dismiss();
-    // const request = this.loginService.login(this.myForm.value);
-    // request.subscribe(
-    //   res => this.goToTabs(res),
-    //   err => {
-    //     this.loaderService.dismiss();
-    //     this.toastService.presentToast(JSON.stringify(err));
-    //   }
-    // );
     
   }
-
+async AlertBiometricConfiguration(Head,msg) {
+  const alert = await this.alertController.create({
+      header: Head,
+      message: msg,
+      mode: "ios",
+      buttons: [
+        {
+          text: 'No',
+          role: 'confirm',
+          handler: () => {
+              console.log("No");
+              localStorage.setItem("IsEnabledBiometric","false")
+              this.login();
+          }
+      },
+      {
+        text: 'Yes',
+        role: 'confirm',
+        handler: () => {
+            console.log("Yes")
+            localStorage.setItem("IsEnabledBiometric","true");
+            this.toastService.presentToast("Biometric login is configured for future login's!");
+            this.login();
+        }
+    }
+    ]
+  });
+  await alert.present();
+}
   goToTabs(response: User) {
-    this.loaderService.dismiss();
     if (!!response && response.Success) {
       localStorage.setItem('token', response.ApiToken);
       if (!!response.Data) {
@@ -138,9 +232,9 @@ export class LoginPage {
         // this.globalService.allow_create_jobs_checkin = (!!(response.Data.Subscriber && !!response.Data.Subscriber.allow_create_jobs_checkin) ? response.Data.Subscriber.allow_create_jobs_checkin : false);
         // this.globalService.allow_job_creation_app = (!!(response.Data.Subscriber && !!response.Data.Subscriber.allow_job_creation_app) ? response.Data.Subscriber.allow_job_creation_app : false);
       }
+   
       this.router.navigate(['/tabs']);
     } else {
-      console.log("========= here",response)
       this.toastService.presentToast(response.Message);
     }
   }

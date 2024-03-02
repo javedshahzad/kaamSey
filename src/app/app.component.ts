@@ -13,6 +13,7 @@ import { GlobalService } from './core/auth/global.service';
 import { LanguageService } from './core/language.service';
 import { ToastService } from './core/toast.service';
 import { Storage } from '@ionic/storage-angular';
+import { BiometricAuthService } from './core/biometric-auth.service';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,7 @@ export class AppComponent {
     private languageService: LanguageService, private router: Router, private toastService: ToastService,
     private translateService: TranslateService, private market: Market, public alertController: AlertController,
     private storage: Storage,
+    private BiometricSr:BiometricAuthService,
     public http: HttpClient, public appVersion: AppVersion, private location: Location,private globalService:GlobalService) {
     this.initializeApp();
     this.backButtonEvent();
@@ -40,19 +42,37 @@ export class AppComponent {
     this.platform.ready().then(async () => {
       this.storage.create();
       await StatusBar.setStyle({ style: Style.Light });
-      setTimeout(async () => {
-        await SplashScreen.hide()
-      }, 2000);
+
       this.languageService.setInitialAppLanguage();
       this.appVersion.getVersionCode().then(res => {
         this.versionCode = res;
         //this.checkAppVersion();
       })
+      setTimeout(async () => {
+        await SplashScreen.hide();
+        this.initBiometric();
+      }, 2000);
     });
     this.platform.resume.subscribe(res => {
       //this.checkAppVersion()
     })
 
+
+  }
+  initBiometric(){
+    const token = localStorage.getItem('token');
+    if (token) {
+      var isBiometricON = localStorage.getItem('IsEnabledBiometric') ? localStorage.getItem('IsEnabledBiometric') : "";
+      if(isBiometricON === "true"){
+        this.BiometricSr.BiometricAuthentication().then((result)=>{
+          console.log(result)
+        }).catch((error:any)=>{
+          console.log(error)
+          this.router.navigate(['/login']);
+        })
+      }
+   
+    }
 
   }
   checkAppVersion() {

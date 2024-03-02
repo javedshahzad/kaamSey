@@ -19,7 +19,7 @@ dependencies {
     implementation "com.soundcloud.android:android-crop:1.0.0@aar"
     implementation "androidx.webkit:webkit:1.4.0"
 }
-
+apply from: "../../node_modules/cordova-plugin-fingerprint-aio/src/android/build.gradle"
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()
