@@ -30,13 +30,21 @@ export class BiometricAuthService {
                 .catch((error: any) => {
                     console.log(error)
                     this.presentAlertMatchNotFound('Biometric authrization failed','Could not match!');
-                    reject("Biometric not match");
+                    let data = {
+                      error : error,
+                      message:"Biometric not match"
+                    }
+                    reject(data);
                 });
 
         })
         .catch((error: any) => {
             console.log(error);
-            reject("Biometric not available");
+            let data = {
+              error : error,
+              message:"Biometric not available"
+            }
+            reject(data);
             this.presentAlertMatchNotFound('Biometric not available','Biometric not configured. Please configure biometric from your device settings!');
         });
       });

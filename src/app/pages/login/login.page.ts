@@ -91,14 +91,18 @@ export class LoginPage {
       return;
     }
     this.BiometricSr.BiometricAuthentication().then(async (result)=>{
+      console.log(result)
+      localStorage.setItem("IsEnabledBiometric","true");
       if(this.IsEnabledBiometric === "" || this.IsEnabledBiometric === "false"){
-        this.AlertBiometricConfiguration("Biometric Configuration!","Do you want to use Biometric Login in future Login's?")
-      }else{
-        this.login();
+        this.toastService.presentToast("Biometric login is configured for future Login's");
       }
+      this.login();
     }).catch((error:any)=>{
       // this.toastService.presentToast("");
       console.log(error)
+      if(error.error.code === -101){
+        this.login();
+      }
     })
   }
   checkBiometricIfnotEnabled(){
@@ -118,7 +122,7 @@ export class LoginPage {
       return;
     }
     if(this.IsEnabledBiometric === "" || this.IsEnabledBiometric === "false"){
-      this.AlertBiometricConfiguration("Biometric Configuration!","Do you want to use Biometric Login in future Login's?")
+      this.loginWithBiometric();
     }else{
       this.login();
     }
@@ -182,35 +186,6 @@ export class LoginPage {
   }
     
   }
-async AlertBiometricConfiguration(Head,msg) {
-  const alert = await this.alertController.create({
-      header: Head,
-      message: msg,
-      mode: "ios",
-      buttons: [
-        {
-          text: 'No',
-          role: 'confirm',
-          handler: () => {
-              console.log("No");
-              localStorage.setItem("IsEnabledBiometric","false")
-              this.login();
-          }
-      },
-      {
-        text: 'Yes',
-        role: 'confirm',
-        handler: () => {
-            console.log("Yes")
-            localStorage.setItem("IsEnabledBiometric","true");
-            this.toastService.presentToast("Biometric login is configured for future login's!");
-            this.login();
-        }
-    }
-    ]
-  });
-  await alert.present();
-}
   goToTabs(response: User) {
     if (!!response && response.Success) {
       localStorage.setItem('token', response.ApiToken);
