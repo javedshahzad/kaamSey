@@ -47,32 +47,16 @@ export class AppComponent {
       this.appVersion.getVersionCode().then(res => {
         this.versionCode = res;
         //this.checkAppVersion();
-      })
+      });
+      localStorage.setItem("IsLogoutFromDasboard","false");
       setTimeout(async () => {
         await SplashScreen.hide();
-        this.initBiometric();
       }, 2000);
     });
     this.platform.resume.subscribe(res => {
       //this.checkAppVersion()
     })
 
-
-  }
-  initBiometric(){
-    const token = localStorage.getItem('token');
-    if (token) {
-      var isBiometricON = localStorage.getItem('IsEnabledBiometric') ? localStorage.getItem('IsEnabledBiometric') : "";
-      if(isBiometricON === "true"){
-        this.BiometricSr.BiometricAuthentication().then((result)=>{
-          console.log(result)
-        }).catch((error:any)=>{
-          console.log(error)
-          this.router.navigate(['/login']);
-        })
-      }
-   
-    }
 
   }
   checkAppVersion() {

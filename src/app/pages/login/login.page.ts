@@ -28,6 +28,7 @@ export class LoginPage {
   Email = "";
   IsEnabledBiometric="";
   UserPassword="";
+  IsLogoutFromDasboard="";
 
   constructor(private toastService: ToastService, private loaderService: LoaderService, private router: Router,
     private formBuilder: FormBuilder, private loginService: LoginService, private device: Device,
@@ -56,6 +57,12 @@ export class LoginPage {
     this.BiometricSr.checkBiometric();
     this.IsEnabledBiometric = localStorage.getItem('IsEnabledBiometric') ? localStorage.getItem('IsEnabledBiometric') : "";
     this.UserPassword = localStorage.getItem('UserPassword') ? localStorage.getItem('UserPassword') : "";
+    this.IsLogoutFromDasboard = localStorage.getItem('IsLogoutFromDasboard') ? localStorage.getItem('IsLogoutFromDasboard') : "";
+    if(this.IsLogoutFromDasboard === "false" && this.IsEnabledBiometric === "true"){
+      setTimeout(() => {
+        this.loginWithBiometric();  
+      }, 2000);
+    }
   }
 
   formInit() {
@@ -101,6 +108,7 @@ export class LoginPage {
       // this.toastService.presentToast("");
       console.log(error)
       if(error.error.code === -101){
+        localStorage.setItem("IsEnabledBiometric","false");
         this.login();
       }
     })
