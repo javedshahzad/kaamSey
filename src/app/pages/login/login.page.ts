@@ -58,6 +58,8 @@ export class LoginPage {
     this.IsEnabledBiometric = localStorage.getItem('IsEnabledBiometric') ? localStorage.getItem('IsEnabledBiometric') : "";
     this.UserPassword = localStorage.getItem('UserPassword') ? localStorage.getItem('UserPassword') : "";
     this.IsLogoutFromDasboard = localStorage.getItem('IsLogoutFromDasboard') ? localStorage.getItem('IsLogoutFromDasboard') : "";
+    this.companyCode = localStorage.getItem('companyCode');
+    this.Email = localStorage.getItem('UserEmail');
     if(this.IsLogoutFromDasboard === "false" && this.IsEnabledBiometric === "true"){
       setTimeout(() => {
         this.loginWithBiometric();  
@@ -114,27 +116,7 @@ export class LoginPage {
     })
   }
   checkBiometricIfnotEnabled(){
-    if (!!this.companyCode) {
-      this.myForm.controls.CompanyCode.setValue(localStorage.getItem('companyCode'));
-    }
-    if (!!this.Email) {
-      this.myForm.controls.Email.setValue(localStorage.getItem('UserEmail'));
-    }
-
-    if (this.myForm.invalid) {
-      Object.keys(this.myForm.controls).forEach(key => {
-        if (this.myForm.controls[key].invalid) {
-          this.myForm.controls[key].markAsTouched({ onlySelf: true });
-        }
-      });
-      return;
-    }
-    if(this.IsEnabledBiometric === "" || this.IsEnabledBiometric === "false"){
-      this.loginWithBiometric();
-    }else{
-      this.login();
-    }
-
+    this.login();
   }
   async login() {
     if (!!this.companyCode) {
@@ -168,10 +150,9 @@ export class LoginPage {
         if (!!res.Data.Subscriber.CompanyCode) {
           localStorage.setItem("companyCode", res.Data.Subscriber.CompanyCode);
         }
-        localStorage.setItem("UserEmail",res.Data.Email);
-        localStorage.setItem("UserPassword",res.Data.Password)
         const request = this.loginService.login(this.myForm.value);
         request.subscribe(res =>{ 
+          console.log(res,"user response")
           this.loaderService.dismiss();
             this.goToTabs(res);
         },
@@ -198,6 +179,7 @@ export class LoginPage {
     if (!!response && response.Success) {
       localStorage.setItem('token', response.ApiToken);
       if (!!response.Data) {
+        console.log(response,"here setting data")
         localStorage.setItem('username', (!!(response.Data.login_name || response.Data.contact_email) ? (response.Data.login_name || response.Data.contact_email) : ""));
         localStorage.setItem('empId', (!!response.Data.employee_id ? response.Data.employee_id.toString() : (!!response.Data.tbl_employees[0].employee_id ? response.Data.tbl_employees[0].employee_id.toString() : "")));
         localStorage.setItem('isCreateJobCheckin', !!response.Data.Subscriber && !!response.Data.Subscriber.CreateJobCheckin ? response.Data.Subscriber.CreateJobCheckin.toString() : 'false');
@@ -212,11 +194,30 @@ export class LoginPage {
         localStorage.setItem('job_visible',!!response.Data.Subscriber && !!response.Data.Subscriber.job_visible ? response.Data.Subscriber.job_visible.toString() : 'false');
         this.globalService.isContactLogin = Boolean(!!response.Data.contact_id);
         this.globalService.isActiveEmp = (!!(response.Data.active || response.Data.Active) ? Boolean((response.Data.active || response.Data.Active)) : false);
+        localStorage.setItem("UserEmail",this.myForm.value.Email);
+        localStorage.setItem("UserPassword",this.myForm.value.Password);
         // this.globalService.allow_create_jobs_checkin = (!!(response.Data.Subscriber && !!response.Data.Subscriber.allow_create_jobs_checkin) ? response.Data.Subscriber.allow_create_jobs_checkin : false);
         // this.globalService.allow_job_creation_app = (!!(response.Data.Subscriber && !!response.Data.Subscriber.allow_job_creation_app) ? response.Data.Subscriber.allow_job_creation_app : false);
       }
-   
-      this.router.navigate(['/tabs']);
+      if(this.IsEnabledBiometric === "" || this.IsEnabledBiometric === "false"){
+        this.BiometricSr.BiometricAuthentication().then(async (result)=>{
+          console.log(result)
+          localStorage.setItem("IsEnabledBiometric","true");
+          if(this.IsEnabledBiometric === "" || this.IsEnabledBiometric === "false"){
+            this.toastService.presentToast("Biometric login is configured for future Login's");
+          }
+          this.router.navigate(['/tabs']);
+        }).catch((error:any)=>{
+          console.log(error)
+          if(error.error.code === -101){
+            localStorage.setItem("IsEnabledBiometric","false");
+            this.router.navigate(['/tabs']);
+          }
+        })
+      }else{
+        this.router.navigate(['/tabs']);
+      }
+      
     } else {
       this.toastService.presentToast(response.Message);
     }

@@ -26,6 +26,8 @@ export class Data {
     contact_email: string;
     sign_path: string;
     is_active: boolean;
+    Email?:any;
+    Password?:any;
     Subscriber: Subscriber;
     tbl_employees: [{
         employee_id: number;
